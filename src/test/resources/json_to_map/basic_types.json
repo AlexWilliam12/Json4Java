@@ -1,0 +1,7 @@
+{
+  "string": "example",
+  "number": 123.45,
+  "integer": 42,
+  "boolean": true,
+  "nullValue": null
+}
