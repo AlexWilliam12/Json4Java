@@ -48,7 +48,7 @@ class JsonParser {
 
     private JsonObject parseObject() {
         expect(JsonToken.TokenType.LEFT_BRACE);
-        JsonObject map = new JsonObject(index == 0);
+        JsonObject map = new JsonObject();
         while (!check(JsonToken.TokenType.RIGHT_BRACE)) {
             String key = expect(JsonToken.TokenType.STRING).value();
             expect(JsonToken.TokenType.COLON);
@@ -63,7 +63,7 @@ class JsonParser {
 
     private JsonArray parseArray() {
         expect(JsonToken.TokenType.LEFT_BRACKET);
-        JsonArray array = new JsonArray(index == 0);
+        JsonArray array = new JsonArray();
         while (!check(JsonToken.TokenType.RIGHT_BRACKET)) {
             array.add(parseValue());
             if (!check(JsonToken.TokenType.RIGHT_BRACKET)) {

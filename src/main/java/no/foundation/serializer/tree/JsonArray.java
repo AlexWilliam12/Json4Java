@@ -6,8 +6,7 @@ public class JsonArray extends JsonNode implements List<JsonNode> {
 
     private final List<JsonNode> values;
 
-    public JsonArray(boolean isRoot) {
-        super(isRoot);
+    public JsonArray() {
         values = new ArrayList<>();
     }
 

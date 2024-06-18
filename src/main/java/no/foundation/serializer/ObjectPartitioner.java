@@ -10,24 +10,24 @@ import java.util.Collection;
 
 class ObjectPartitioner {
 
-    JsonNode partition(Object value, boolean isRoot) {
+    JsonNode partition(Object value) {
         if (ObjectTypeProvider.isBasicType(value)) {
             return partitionValue(value);
         } else if (value instanceof Collection<?> collection) {
-            return partitionList(collection, isRoot);
+            return partitionList(collection);
         }
-        return partitionObject(value, isRoot);
+        return partitionObject(value);
     }
 
-    private JsonObject partitionObject(Object obj, boolean isRoot) {
+    private JsonObject partitionObject(Object obj) {
         Field[] fields = obj.getClass().getDeclaredFields();
-        JsonObject object = new JsonObject(isRoot);
+        JsonObject object = new JsonObject();
         for (Field field : fields) {
             try {
                 field.setAccessible(true);
                 String key = field.getName();
                 Object value = field.get(obj);
-                object.put(key, partition(value, false));
+                object.put(key, partition(value));
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
@@ -35,10 +35,10 @@ class ObjectPartitioner {
         return object;
     }
 
-    private JsonArray partitionList(Collection<?> collection, boolean isRoot) {
-        JsonArray array = new JsonArray(isRoot);
+    private JsonArray partitionList(Collection<?> collection) {
+        JsonArray array = new JsonArray();
         for (Object value : collection) {
-            array.add(partition(value, false));
+            array.add(partition(value));
         }
         return array;
     }

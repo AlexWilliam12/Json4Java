@@ -6,6 +6,7 @@ import no.foundation.serializer.tree.JsonNode;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
 
 class JsonDecoder {
 
@@ -16,39 +17,39 @@ class JsonDecoder {
     }
 
     <T> T decode(File file, Class<T> c) throws JsonException, IOException {
-        String src = readInput(new FileInputStream(file), true);
+        String src = readInput(new FileInputStream(Objects.requireNonNull(file)), true);
         List<JsonToken> tokens = lexer.tokenize(src);
         JsonNode node = new JsonParser(tokens).parse();
         return new ObjectConverter().convert(node, c);
     }
 
     Object decode(File file) throws JsonException, IOException {
-        String src = readInput(new FileInputStream(file), true);
+        String src = readInput(new FileInputStream(Objects.requireNonNull(file)), true);
         List<JsonToken> tokens = lexer.tokenize(src);
         return new JsonParser(tokens).parse();
     }
 
     <T> T decode(InputStream stream, Class<T> c, boolean autoClose) throws JsonException, IOException {
-        String src = readInput(stream, autoClose);
+        String src = readInput(Objects.requireNonNull(stream), autoClose);
         List<JsonToken> tokens = lexer.tokenize(src);
         JsonNode node = new JsonParser(tokens).parse();
         return new ObjectConverter().convert(node, c);
     }
 
     Object decode(InputStream stream, boolean autoClose) throws JsonException, IOException {
-        String src = readInput(stream, autoClose);
+        String src = readInput(Objects.requireNonNull(stream), autoClose);
         List<JsonToken> tokens = lexer.tokenize(src);
         return new JsonParser(tokens).parse();
     }
 
     <T> T decode(String src, Class<T> c) throws JsonException {
-        List<JsonToken> tokens = lexer.tokenize(src);
+        List<JsonToken> tokens = lexer.tokenize(Objects.requireNonNull(src));
         JsonNode node = new JsonParser(tokens).parse();
         return new ObjectConverter().convert(node, c);
     }
 
     Object decode(String src) throws JsonException {
-        List<JsonToken> tokens = lexer.tokenize(src);
+        List<JsonToken> tokens = lexer.tokenize(Objects.requireNonNull(src));
         return new JsonParser(tokens).parse();
     }
 

@@ -51,7 +51,6 @@ class JsonLexer {
                 }
             }
         }
-        tokens.add(tokenize(JsonToken.TokenType.EOF, ""));
         return tokens;
     }
 

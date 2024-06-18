@@ -12,9 +12,6 @@ import java.util.TimeZone;
 
 class ObjectTypeProvider {
 
-    private ObjectTypeProvider() {
-    }
-
     static boolean isBasicType(Object value) {
         return isString(value)
                 || isNumber(value)
@@ -45,10 +42,10 @@ class ObjectTypeProvider {
                 || value instanceof TimeZone;
     }
 
+    @SuppressWarnings("IfCanBeSwitch")
     static Object convertTemporal(Class<?> type, Object value) {
         if (value instanceof String temporal) {
             try {
-                //noinspection IfCanBeSwitch
                 if (type.equals(Date.class)) {
                     return Date.from(Instant.parse(temporal));
                 } else if (type.equals(java.sql.Date.class)) {
@@ -97,8 +94,8 @@ class ObjectTypeProvider {
         return null;
     }
 
+    @SuppressWarnings("IfCanBeSwitch")
     static Number convertNumber(Number number, Class<?> type) {
-        //noinspection IfCanBeSwitch
         if (type.equals(int.class) || type.equals(Integer.class)) {
             return number.intValue();
         } else if (type.equals(long.class) || type.equals(Long.class)) {

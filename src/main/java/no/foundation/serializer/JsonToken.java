@@ -8,6 +8,5 @@ record JsonToken(JsonToken.TokenType type, String value) {
         COLON, COMMA,
         STRING, NUMBER,
         FALSE, TRUE, NULL,
-        EOF
     }
 }

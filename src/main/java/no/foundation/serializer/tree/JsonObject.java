@@ -9,8 +9,7 @@ public class JsonObject extends JsonNode implements Map<String, JsonNode> {
 
     private final Map<String, JsonNode> pairs;
 
-    public JsonObject(boolean isRoot) {
-        super(isRoot);
+    public JsonObject() {
         this.pairs = new LinkedHashMap<>();
     }
 
@@ -88,8 +87,7 @@ public class JsonObject extends JsonNode implements Map<String, JsonNode> {
         for (var entry : pairs.entrySet()) {
             builder.append('"');
             builder.append(entry.getKey());
-            builder.append('"');
-            builder.append(": ");
+            builder.append("\": ");
             builder.append(entry.getValue());
             builder.append(", ");
         }

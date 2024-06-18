@@ -16,7 +16,7 @@ class ObjectConverter {
             return null;
         }
         if (value instanceof JsonNode node) {
-            value = node.getOriginalType(value);
+            value = node.getOriginalType();
         }
         if (type.equals(value.getClass())) {
             return (T) value;

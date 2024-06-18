@@ -8,7 +8,6 @@ public class JsonValue<T> extends JsonNode {
     private final T value;
 
     public JsonValue(T value) {
-        super(false);
         this.value = value;
     }
 
