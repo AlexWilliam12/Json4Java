@@ -10,12 +10,12 @@ import java.time.temporal.Temporal;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class ObjectTypeProvider {
+class ObjectTypeProvider {
 
     private ObjectTypeProvider() {
     }
 
-    public static boolean isBasicType(Object value) {
+    static boolean isBasicType(Object value) {
         return isString(value)
                 || isNumber(value)
                 || isBoolean(value)
@@ -23,29 +23,29 @@ public class ObjectTypeProvider {
                 || isNull(value);
     }
 
-    public static boolean isNull(Object value) {
+    static boolean isNull(Object value) {
         return value == null;
     }
 
-    public static boolean isBoolean(Object value) {
+    static boolean isBoolean(Object value) {
         return value instanceof Boolean;
     }
 
-    public static boolean isNumber(Object value) {
+    static boolean isNumber(Object value) {
         return value instanceof Number;
     }
 
-    public static boolean isString(Object value) {
+    static boolean isString(Object value) {
         return value instanceof String;
     }
 
-    public static boolean isTemporal(Object value) {
+    static boolean isTemporal(Object value) {
         return value instanceof Temporal
                 || value instanceof Date
                 || value instanceof TimeZone;
     }
 
-    public static Object convertTemporal(Class<?> type, Object value) {
+    static Object convertTemporal(Class<?> type, Object value) {
         if (value instanceof String temporal) {
             try {
                 //noinspection IfCanBeSwitch
@@ -97,7 +97,7 @@ public class ObjectTypeProvider {
         return null;
     }
 
-    public static Number convertNumber(Number number, Class<?> type) {
+    static Number convertNumber(Number number, Class<?> type) {
         //noinspection IfCanBeSwitch
         if (type.equals(int.class) || type.equals(Integer.class)) {
             return number.intValue();

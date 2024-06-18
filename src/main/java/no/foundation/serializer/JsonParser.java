@@ -1,13 +1,14 @@
 package no.foundation.serializer;
 
 import no.foundation.serializer.exceptions.JsonException;
+import no.foundation.serializer.tree.JsonArray;
+import no.foundation.serializer.tree.JsonNode;
+import no.foundation.serializer.tree.JsonObject;
+import no.foundation.serializer.tree.JsonValue;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 class JsonParser {
 
@@ -19,39 +20,39 @@ class JsonParser {
         this.index = 0;
     }
 
-    Object parse() {
+    JsonNode parse() {
         return parseValue();
     }
 
-    private Object parseValue() {
+    private JsonNode parseValue() {
         if (check(JsonToken.TokenType.LEFT_BRACE)) {
             return parseObject();
         } else if (check(JsonToken.TokenType.LEFT_BRACKET)) {
             return parseArray();
         } else if (check(JsonToken.TokenType.STRING)) {
-            return expect(JsonToken.TokenType.STRING).value();
+            return new JsonValue<>(expect(JsonToken.TokenType.STRING).value());
         } else if (check(JsonToken.TokenType.NUMBER)) {
-            return parseNumber(expect(JsonToken.TokenType.NUMBER).value());
+            return new JsonValue<>(parseNumber(expect(JsonToken.TokenType.NUMBER).value()));
         } else if (check(JsonToken.TokenType.TRUE)) {
-            return Boolean.parseBoolean(expect(JsonToken.TokenType.TRUE).value());
+            return new JsonValue<>(Boolean.parseBoolean(expect(JsonToken.TokenType.TRUE).value()));
         } else if (check(JsonToken.TokenType.FALSE)) {
-            return Boolean.parseBoolean(expect(JsonToken.TokenType.FALSE).value());
+            return new JsonValue<>(Boolean.parseBoolean(expect(JsonToken.TokenType.FALSE).value()));
         } else if (check(JsonToken.TokenType.NULL)) {
-            return expect(JsonToken.TokenType.NULL).value();
+            expect(JsonToken.TokenType.NULL);
+            return new JsonValue<>(null);
         } else {
             JsonToken.TokenType type = tokens.get(index).type();
             throw new JsonException("Unexpected token: " + type);
         }
     }
 
-    private Map<String, Object> parseObject() {
+    private JsonObject parseObject() {
         expect(JsonToken.TokenType.LEFT_BRACE);
-        Map<String, Object> map = new LinkedHashMap<>();
+        JsonObject map = new JsonObject(index == 0);
         while (!check(JsonToken.TokenType.RIGHT_BRACE)) {
             String key = expect(JsonToken.TokenType.STRING).value();
             expect(JsonToken.TokenType.COLON);
-            Object value = parseValue();
-            map.put(key, value);
+            map.put(key, parseValue());
             if (!check(JsonToken.TokenType.RIGHT_BRACE)) {
                 expect(JsonToken.TokenType.COMMA);
             }
@@ -60,17 +61,17 @@ class JsonParser {
         return map;
     }
 
-    private List<?> parseArray() {
+    private JsonArray parseArray() {
         expect(JsonToken.TokenType.LEFT_BRACKET);
-        List<Object> list = new ArrayList<>();
+        JsonArray array = new JsonArray(index == 0);
         while (!check(JsonToken.TokenType.RIGHT_BRACKET)) {
-            list.add(parseValue());
+            array.add(parseValue());
             if (!check(JsonToken.TokenType.RIGHT_BRACKET)) {
                 expect(JsonToken.TokenType.COMMA);
             }
         }
         expect(JsonToken.TokenType.RIGHT_BRACKET);
-        return list;
+        return array;
     }
 
     private Number parseNumber(String value) {
