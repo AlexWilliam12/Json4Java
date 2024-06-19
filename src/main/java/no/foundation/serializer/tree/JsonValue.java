@@ -1,29 +1,36 @@
 package no.foundation.serializer.tree;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.time.temporal.Temporal;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class JsonValue<T> extends JsonNode {
-    private final T value;
+/**
+ * A record representing a JSON value node.
+ * This record implements JsonNode and holds a single value of type T.
+ *
+ * @param <T> the type of the value held by this JsonValue.
+ */
+public record JsonValue<T>(T value) implements JsonNode {
 
-    public JsonValue(T value) {
-        this.value = value;
-    }
-
-    public T getValue() {
-        return value;
-    }
-
+    /**
+     * Returns the string representation of this JsonValue.
+     *
+     * @return the string representation of this JsonValue.
+     */
     @Override
-    public String toString() {
+    public @Nullable String toString() {
+        @Nullable String result;
         if (value instanceof Temporal
                 || value instanceof Date
                 || value instanceof TimeZone
                 || value instanceof String
         ) {
-            return "\"%s\"".formatted(value.toString());
+            result = "\"%s\"".formatted(value.toString());
+        } else {
+            result = value == null ? null : value.toString();
         }
-        return value == null ? null : value.toString();
+        return result;
     }
 }

@@ -1,6 +1,7 @@
 package no.foundation.serializer;
 
 import no.foundation.serializer.exceptions.ObjectConverterException;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -10,9 +11,20 @@ import java.time.temporal.Temporal;
 import java.util.Date;
 import java.util.TimeZone;
 
-class ObjectTypeProvider {
+/**
+ * Utility class that provides methods to identify and convert basic object types.
+ * This class is final and cannot be subclassed.
+ */
+final class ObjectTypeProvider {
 
-    static boolean isBasicType(Object value) {
+    /**
+     * Determines if the given object is of a basic type.
+     * Basic types include: String, Number, Boolean, Temporal, and null.
+     *
+     * @param value the object to check.
+     * @return true if the object is of a basic type, false otherwise.
+     */
+    static boolean isBasicType(final Object value) {
         return isString(value)
                 || isNumber(value)
                 || isBoolean(value)
@@ -20,99 +32,149 @@ class ObjectTypeProvider {
                 || isNull(value);
     }
 
-    static boolean isNull(Object value) {
+    /**
+     * Determines if the given object is null.
+     *
+     * @param value the object to check.
+     * @return true if the object is null, false otherwise.
+     */
+    static boolean isNull(final Object value) {
         return value == null;
     }
 
-    static boolean isBoolean(Object value) {
+    /**
+     * Determines if the given object is a Boolean.
+     *
+     * @param value the object to check.
+     * @return true if the object is a Boolean, false otherwise.
+     */
+    static boolean isBoolean(final Object value) {
         return value instanceof Boolean;
     }
 
-    static boolean isNumber(Object value) {
+    /**
+     * Determines if the given object is a Number.
+     *
+     * @param value the object to check.
+     * @return true if the object is a Number, false otherwise.
+     */
+    static boolean isNumber(final Object value) {
         return value instanceof Number;
     }
 
-    static boolean isString(Object value) {
+    /**
+     * Determines if the given object is a String.
+     *
+     * @param value the object to check.
+     * @return true if the object is a String, false otherwise.
+     */
+    static boolean isString(final Object value) {
         return value instanceof String;
     }
 
-    static boolean isTemporal(Object value) {
+    /**
+     * Determines if the given object is a temporal type.
+     * Temporal types include instances of Temporal, Date, and TimeZone.
+     *
+     * @param value the object to check.
+     * @return true if the object is a temporal type, false otherwise.
+     */
+    static boolean isTemporal(final Object value) {
         return value instanceof Temporal
                 || value instanceof Date
                 || value instanceof TimeZone;
     }
 
+    /**
+     * Converts a String representation of a temporal value to the specified temporal type.
+     * Supported types include various java.time and java.sql temporal types.
+     *
+     * @param type  the target temporal type class.
+     * @param value the String representation of the temporal value.
+     * @return the converted temporal object, or null if the conversion fails.
+     * @throws ObjectConverterException if the conversion fails due to a parsing error.
+     */
     @SuppressWarnings("IfCanBeSwitch")
-    static Object convertTemporal(Class<?> type, Object value) {
+    static Object convertTemporal(final Class<?> type, final Object value) {
+        Object result = null;
         if (value instanceof String temporal) {
             try {
                 if (type.equals(Date.class)) {
-                    return Date.from(Instant.parse(temporal));
+                    result = Date.from(Instant.parse(temporal));
                 } else if (type.equals(java.sql.Date.class)) {
-                    return java.sql.Date.valueOf(LocalDate.parse(temporal));
+                    result = java.sql.Date.valueOf(LocalDate.parse(temporal));
                 } else if (type.equals(java.sql.Time.class)) {
-                    return java.sql.Time.valueOf(LocalTime.parse(temporal));
+                    result = java.sql.Time.valueOf(LocalTime.parse(temporal));
                 } else if (type.equals(java.sql.Timestamp.class)) {
-                    return java.sql.Timestamp.valueOf(LocalDateTime.parse(temporal));
+                    result = java.sql.Timestamp.valueOf(LocalDateTime.parse(temporal));
                 } else if (type.equals(LocalDate.class)) {
-                    return LocalDate.parse(temporal);
+                    result = LocalDate.parse(temporal);
                 } else if (type.equals(LocalDateTime.class)) {
-                    return LocalDateTime.parse(temporal);
+                    result = LocalDateTime.parse(temporal);
                 } else if (type.equals(Instant.class)) {
-                    return Instant.parse(temporal);
+                    result = Instant.parse(temporal);
                 } else if (type.equals(LocalTime.class)) {
-                    return LocalTime.parse(temporal);
+                    result = LocalTime.parse(temporal);
                 } else if (type.equals(ZonedDateTime.class)) {
-                    return ZonedDateTime.parse(temporal);
+                    result = ZonedDateTime.parse(temporal);
                 } else if (type.equals(OffsetDateTime.class)) {
-                    return OffsetDateTime.parse(temporal);
+                    result = OffsetDateTime.parse(temporal);
                 } else if (type.equals(Period.class)) {
-                    return Period.parse(temporal);
+                    result = Period.parse(temporal);
                 } else if (type.equals(Year.class)) {
-                    return Year.parse(temporal);
+                    result = Year.parse(temporal);
                 } else if (type.equals(YearMonth.class)) {
-                    return YearMonth.parse(temporal);
+                    result = YearMonth.parse(temporal);
                 } else if (type.equals(ZoneId.class)) {
-                    return ZoneId.of(temporal);
+                    result = ZoneId.of(temporal);
                 } else if (type.equals(Month.class)) {
-                    return Month.valueOf(temporal.toUpperCase());
+                    result = Month.valueOf(temporal.toUpperCase());
                 } else if (type.equals(MonthDay.class)) {
-                    return MonthDay.parse(temporal);
+                    result = MonthDay.parse(temporal);
                 } else if (type.equals(DayOfWeek.class)) {
-                    return DayOfWeek.valueOf(temporal.toUpperCase());
+                    result = DayOfWeek.valueOf(temporal.toUpperCase());
                 } else if (type.equals(TimeZone.class)) {
-                    return TimeZone.getTimeZone(temporal);
+                    result = TimeZone.getTimeZone(temporal);
                 } else if (type.equals(OffsetTime.class)) {
-                    return OffsetTime.parse(temporal);
+                    result = OffsetTime.parse(temporal);
                 } else if (type.equals(ZoneOffset.class)) {
-                    return ZoneOffset.of(temporal);
+                    result = ZoneOffset.of(temporal);
                 }
             } catch (DateTimeParseException e) {
                 throw new ObjectConverterException(e);
             }
         }
-        return null;
+        return result;
     }
 
+    /**
+     * Converts a Number to the specified target numeric type.
+     * Supported types include various primitive and wrapper numeric types, BigInteger, and BigDecimal.
+     *
+     * @param number the number to convert.
+     * @param type   the target numeric type class.
+     * @return the converted number.
+     */
     @SuppressWarnings("IfCanBeSwitch")
-    static Number convertNumber(Number number, Class<?> type) {
+    static Number convertNumber(final Number number, @NotNull final Class<?> type) {
+        Number result = number;
         if (type.equals(int.class) || type.equals(Integer.class)) {
-            return number.intValue();
+            result = number.intValue();
         } else if (type.equals(long.class) || type.equals(Long.class)) {
-            return number.longValue();
+            result = number.longValue();
         } else if (type.equals(float.class) || type.equals(Float.class)) {
-            return number.floatValue();
+            result = number.floatValue();
         } else if (type.equals(double.class) || type.equals(Double.class)) {
-            return number.doubleValue();
+            result = number.doubleValue();
         } else if (type.equals(byte.class) || type.equals(Byte.class)) {
-            return number.byteValue();
+            result = number.byteValue();
         } else if (type.equals(short.class) || type.equals(Short.class)) {
-            return number.shortValue();
+            result = number.shortValue();
         } else if (type.equals(BigInteger.class)) {
-            return new BigInteger(number.toString());
+            result = new BigInteger(number.toString());
         } else if (type.equals(BigDecimal.class)) {
-            return new BigDecimal(number.toString());
+            result = new BigDecimal(number.toString());
         }
-        return number;
+        return result;
     }
 }

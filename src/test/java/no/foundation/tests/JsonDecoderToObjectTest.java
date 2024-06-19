@@ -23,11 +23,10 @@ public class JsonDecoderToObjectTest {
         assertTrue(file.canRead());
 
         JsonSerializer serializer = new JsonSerializer();
-        String content = ReaderUtils.readFile(file);
 
         assertDoesNotThrow(() -> {
             System.out.println("File name: " + file.getName());
-            no.foundation.tests.models.pojo.Teacher teacher = serializer.decode(content, no.foundation.tests.models.pojo.Teacher.class);
+            no.foundation.tests.models.pojo.Teacher teacher = serializer.decode(file, no.foundation.tests.models.pojo.Teacher.class);
             System.out.println("Decoded: " + teacher);
             System.out.println();
         });
@@ -44,11 +43,10 @@ public class JsonDecoderToObjectTest {
         assertTrue(file.canRead());
 
         JsonSerializer serializer = new JsonSerializer();
-        String content = ReaderUtils.readFile(file);
 
         assertDoesNotThrow(() -> {
             System.out.println("File name: " + file.getName());
-            no.foundation.tests.models.record.Teacher teacher = serializer.decode(content, no.foundation.tests.models.record.Teacher.class);
+            no.foundation.tests.models.record.Teacher teacher = serializer.decode(file, no.foundation.tests.models.record.Teacher.class);
             System.out.println("Decoded: " + teacher);
             System.out.println();
         });
@@ -64,12 +62,11 @@ public class JsonDecoderToObjectTest {
         assertTrue(file.isFile());
         assertTrue(file.canRead());
 
-        String content = ReaderUtils.readFile(file);
         JsonSerializer serializer = new JsonSerializer();
 
         assertDoesNotThrow(() -> {
             System.out.println("File name: " + file.getName());
-            no.foundation.tests.models.pojo.Student student = serializer.decode(content, no.foundation.tests.models.pojo.Student.class);
+            no.foundation.tests.models.pojo.Student student = serializer.decode(file, no.foundation.tests.models.pojo.Student.class);
             System.out.println("Decoded: " + student);
             System.out.println();
         });
@@ -85,12 +82,11 @@ public class JsonDecoderToObjectTest {
         assertTrue(file.isFile());
         assertTrue(file.canRead());
 
-        String content = ReaderUtils.readFile(file);
         JsonSerializer serializer = new JsonSerializer();
 
         assertDoesNotThrow(() -> {
             System.out.println("File name: " + file.getName());
-            no.foundation.tests.models.record.Student student = serializer.decode(content, no.foundation.tests.models.record.Student.class);
+            no.foundation.tests.models.record.Student student = serializer.decode(file, no.foundation.tests.models.record.Student.class);
             System.out.println("Decoded: " + student);
             System.out.println();
         });
@@ -106,12 +102,11 @@ public class JsonDecoderToObjectTest {
         assertTrue(file.isFile());
         assertTrue(file.canRead());
 
-        String content = ReaderUtils.readFile(file);
         JsonSerializer serializer = new JsonSerializer();
 
         assertDoesNotThrow(() -> {
             System.out.println("File name: " + file.getName());
-            no.foundation.tests.models.pojo.Course course = serializer.decode(content, no.foundation.tests.models.pojo.Course.class);
+            no.foundation.tests.models.pojo.Course course = serializer.decode(file, no.foundation.tests.models.pojo.Course.class);
             System.out.println("Decoded: " + course);
             System.out.println();
         });
@@ -127,12 +122,11 @@ public class JsonDecoderToObjectTest {
         assertTrue(file.isFile());
         assertTrue(file.canRead());
 
-        String content = ReaderUtils.readFile(file);
         JsonSerializer serializer = new JsonSerializer();
 
         assertDoesNotThrow(() -> {
             System.out.println("File name: " + file.getName());
-            no.foundation.tests.models.record.Course course = serializer.decode(content, no.foundation.tests.models.record.Course.class);
+            no.foundation.tests.models.record.Course course = serializer.decode(file, no.foundation.tests.models.record.Course.class);
             System.out.println("Decoded: " + course);
             System.out.println();
         });

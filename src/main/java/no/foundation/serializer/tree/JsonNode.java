@@ -5,10 +5,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class JsonNode {
-    public Object getOriginalType() {
+/**
+ * A sealed interface representing a node in a JSON structure.
+ * Implementing classes must be one of: JsonValue, JsonArray, or JsonObject.
+ */
+public sealed interface JsonNode permits JsonValue, JsonArray, JsonObject {
+
+    /**
+     * Returns the original Java object representation of this JSON node.
+     * Depending on the implementing class, this method returns:
+     * - For JsonValue: the wrapped value.
+     * - For JsonArray: a List<Object> containing original types of elements.
+     * - For JsonObject: a Map<String, Object> containing original types of values.
+     *
+     * @return the original Java object representation of this JSON node.
+     */
+    default Object getOriginalType() {
         return switch (this) {
-            case JsonValue<?> value -> value.getValue();
+            case JsonValue<?> value -> value.value();
             case JsonArray array -> {
                 List<JsonNode> values = array.getValues();
                 List<Object> list = new ArrayList<>();
@@ -27,7 +41,6 @@ public abstract class JsonNode {
                 }
                 yield map;
             }
-            default -> null;
         };
     }
 }

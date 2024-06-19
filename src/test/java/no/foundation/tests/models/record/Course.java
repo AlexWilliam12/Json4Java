@@ -1,10 +1,19 @@
 package no.foundation.tests.models.record;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
-public record Course(Long id, String name, Teacher teacher, List<Student> students) {
+public record Course(
+        Long id,
+        String name,
+        Teacher teacher,
+        List<Student> students
+) {
 
-    public static CourseBuilder builder() {
+    @Contract(value = " -> new", pure = true)
+    public static @NotNull CourseBuilder builder() {
         return new CourseBuilder();
     }
 

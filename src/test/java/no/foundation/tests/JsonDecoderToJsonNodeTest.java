@@ -1,6 +1,7 @@
 package no.foundation.tests;
 
 import no.foundation.serializer.JsonSerializer;
+import no.foundation.serializer.tree.JsonNode;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +10,7 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class JsonDecoderToMapTest {
+public class JsonDecoderToJsonNodeTest {
 
     private static File directory;
 
@@ -35,12 +36,10 @@ public class JsonDecoderToMapTest {
             assertTrue(file.isFile());
             assertTrue(file.canRead());
 
-            String content = ReaderUtils.readFile(file);
-
             assertDoesNotThrow(() -> {
                 System.out.println("File name: " + file.getName());
-                Object decoded = serializer.decode(content);
-                System.out.println("Decoded: " + decoded);
+                JsonNode node = serializer.decode(file);
+                System.out.println("Decoded: " + node);
                 System.out.println();
             });
         }

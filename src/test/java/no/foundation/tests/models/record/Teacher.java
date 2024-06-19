@@ -1,8 +1,15 @@
 package no.foundation.tests.models.record;
 
-public record Teacher(Long id, String name) {
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
-    public static TeacherBuilder builder() {
+public record Teacher(
+        Long id,
+        String name
+) {
+
+    @Contract(value = " -> new", pure = true)
+    public static @NotNull TeacherBuilder builder() {
         return new TeacherBuilder();
     }
 
