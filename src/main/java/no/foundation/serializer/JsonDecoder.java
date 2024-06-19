@@ -28,17 +28,17 @@ final class JsonDecoder {
      * Decodes JSON data from a file into an object of the specified class.
      *
      * @param file the file containing JSON data
-     * @param c    the class type to convert the JSON data into
+     * @param type the class type to convert the JSON data into
      * @param <T>  the type of the resulting object
      * @return the decoded object
      * @throws JsonException if there is an error during JSON decoding
      * @throws IOException   if an I/O error occurs
      */
-    <T> T decode(final File file, final Class<T> c) throws JsonException, IOException {
+    <T> T decode(final File file, final Class<T> type) throws JsonException, IOException {
         String src = readInput(new FileInputStream(file), true);
         List<JsonToken> tokens = lexer.tokenize(src);
         JsonNode node = new JsonParser(tokens).parse();
-        return new ObjectConverter().convert(node, c);
+        return new ObjectConverter<>(type).convert(node.getOriginalType());
     }
 
     /**
@@ -59,18 +59,18 @@ final class JsonDecoder {
      * Decodes JSON data from an input stream into an object of the specified class.
      *
      * @param stream    the input stream containing JSON data
-     * @param c         the class type to convert the JSON data into
+     * @param type      the class type to convert the JSON data into
      * @param autoClose flag indicating whether to automatically close the input stream after reading
      * @param <T>       the type of the resulting object
      * @return the decoded object
      * @throws JsonException if there is an error during JSON decoding
      * @throws IOException   if an I/O error occurs
      */
-    <T> T decode(final InputStream stream, final Class<T> c, final boolean autoClose) throws JsonException, IOException {
+    <T> T decode(final InputStream stream, final Class<T> type, final boolean autoClose) throws JsonException, IOException {
         String src = readInput(stream, autoClose);
         List<JsonToken> tokens = lexer.tokenize(src);
         JsonNode node = new JsonParser(tokens).parse();
-        return new ObjectConverter().convert(node, c);
+        return new ObjectConverter<>(type).convert(node.getOriginalType());
     }
 
     /**
@@ -91,16 +91,16 @@ final class JsonDecoder {
     /**
      * Decodes JSON data from a string into an object of the specified class.
      *
-     * @param src the JSON data string
-     * @param c   the class type to convert the JSON data into
-     * @param <T> the type of the resulting object
+     * @param src  the JSON data string
+     * @param type the class type to convert the JSON data into
+     * @param <T>  the type of the resulting object
      * @return the decoded object
      * @throws JsonException if there is an error during JSON decoding
      */
-    <T> T decode(final String src, final Class<T> c) throws JsonException {
+    <T> T decode(final String src, final Class<T> type) throws JsonException {
         List<JsonToken> tokens = lexer.tokenize(src);
         JsonNode node = new JsonParser(tokens).parse();
-        return new ObjectConverter().convert(node, c);
+        return new ObjectConverter<>(type).convert(node.getOriginalType());
     }
 
     /**

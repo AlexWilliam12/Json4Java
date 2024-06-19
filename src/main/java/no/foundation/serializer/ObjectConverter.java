@@ -1,169 +1,132 @@
 package no.foundation.serializer;
 
-import no.foundation.serializer.tree.JsonNode;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import no.foundation.serializer.exceptions.ObjectConverterException;
 
 import java.lang.reflect.*;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
-/**
- * Utility class that provides methods to convert objects between various types.
- * This class is final and cannot be subclassed.
- */
-final class ObjectConverter {
+final class ObjectConverter<T> {
 
-    /**
-     * Converts an object to the specified target type.
-     * If the value is null, the result is null.
-     * Conversion logic varies based on the type of the value and the target type.
-     *
-     * @param value the object to convert.
-     * @param type  the target type class.
-     * @param <T>   the target type.
-     * @return the converted object of the target type, or null if the value is null.
-     */
-    @Contract("null, _ -> null")
-    @SuppressWarnings({"unchecked"})
-    <T> T convert(Object value, Class<T> type) {
-        T result = null;
-        if (value != null) {
-            if (value instanceof JsonNode node) {
-                value = node.getOriginalType();
-            }
-            if (type.equals(value.getClass())) {
-                result = (T) value;
-            } else if (value instanceof Map<?, ?> map) {
-                result = convertMap(map, type);
-            } else if (value instanceof Number number) {
-                result = (T) ObjectTypeProvider.convertNumber(number, type);
-            } else if (ObjectTypeProvider.isTemporal(type)) {
-                result = (T) ObjectTypeProvider.convertTemporal(type, value);
-            } else if (value instanceof Collection<?> collection) {
-                result = convertCollection(collection, type);
+    private final Class<T> target;
+
+    ObjectConverter(Class<T> target) {
+        this.target = target;
+    }
+
+    T convert(Object src) {
+        return convert(src, target);
+    }
+
+    private <E> E convert(Object src, Class<E> type) {
+        if (src == null) {
+            return null;
+        }
+        if (type.isInstance(src)) {
+            return type.cast(src);
+        } else if (src instanceof Map<?, ?> map) {
+            return convertMap(map, type);
+        } else if (src instanceof Number number) {
+            return type.cast(ObjectTypeProvider.convertNumber(number, type));
+        } else if (ObjectTypeProvider.isTemporal(src)) {
+            return type.cast(ObjectTypeProvider.convertTemporal(type, src));
+        } else if (src instanceof Collection<?> collection) {
+            return convertCollection(collection, type);
+        } else {
+            throw new ObjectConverterException("Unsupported type: " + type);
+        }
+    }
+
+    private <E> E convertMap(Map<?, ?> map, Class<E> type) {
+        if (map.isEmpty() && type.isInstance(Map.class)) {
+            return type.cast(Map.of());
+        } else {
+            Map<Object, Object> instance = ObjectTypeProvider.getMapInstance(type);
+            if (instance != null) {
+                instance.putAll(map);
+                return type.cast(instance);
+            } else {
+                return type.isRecord()
+                        ? convertToRecord(map, type)
+                        : convertToPojo(map, type);
             }
         }
-        return result;
     }
 
-    /**
-     * Converts a map to an instance of the specified type.
-     * The type can be a record or a POJO.
-     *
-     * @param map the map to convert.
-     * @param c   the target type class.
-     * @param <T> the target type.
-     * @return the converted instance of the target type.
-     */
-    private <T> T convertMap(final Map<?, ?> map, @NotNull final Class<T> c) {
-        return c.isRecord()
-                ? convertToRecord(map, c)
-                : convertToPojo(map, c);
-    }
-
-    /**
-     * Converts a map to a POJO (Plain Old Java Object).
-     * This method creates a new instance of the target type and sets its fields
-     * using the values from the map.
-     *
-     * @param map the map to convert.
-     * @param c   the target type class.
-     * @param <T> the target type.
-     * @return the converted POJO instance.
-     */
-    private <T> @NotNull T convertToPojo(final Map<?, ?> map, final Class<T> c) {
-        @NotNull T result;
+    private <E> E convertToPojo(final Map<?, ?> map, final Class<E> type) {
         try {
-            Constructor<T> constructor = c.getConstructor();
+            Constructor<E> constructor = type.getConstructor();
             constructor.setAccessible(true);
-            T instance = constructor.newInstance();
-            Field[] fields = c.getDeclaredFields();
+            E instance = constructor.newInstance();
+            Field[] fields = type.getDeclaredFields();
             for (Field field : fields) {
                 field.setAccessible(true);
                 String name = field.getName();
                 if (map.containsKey(name)) {
                     Object value = map.get(name);
-                    if (value instanceof Collection) {
-                        field.set(instance, convert(value, getGenericType(field.getGenericType())));
+                    field.set(instance, convert(value, field.getType()));
+                    if (value instanceof Collection<?> collection) {
+                        field.set(instance, convertCollection(collection, field.getType(), getGenericType(field.getGenericType())));
                     } else {
                         field.set(instance, convert(value, field.getType()));
                     }
                 }
             }
-            result = instance;
+            return instance;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return result;
     }
 
-    /**
-     * Converts a map to a record.
-     * This method creates a new instance of the target record type using its constructor
-     * and the values from the map.
-     *
-     * @param map the map to convert.
-     * @param c   the target type class.
-     * @param <T> the target type.
-     * @return the converted record instance.
-     */
-    private <T> @NotNull T convertToRecord(final Map<?, ?> map, final Class<T> c) {
-        @NotNull T result;
+    private <E> E convertToRecord(final Map<?, ?> map, final Class<E> type) {
         try {
-            RecordComponent[] components = c.getRecordComponents();
+            RecordComponent[] components = type.getRecordComponents();
             Class<?>[] types = new Class<?>[components.length];
             Object[] args = new Object[components.length];
             for (int i = 0; i < components.length; i++) {
                 String name = components[i].getName();
-                Class<?> type = components[i].getType();
-                types[i] = type;
+                types[i] = components[i].getType();
+                // TODO: Convert names to camel case
                 Object value = map.get(name);
-                if (value instanceof Collection) {
+                if (value instanceof Collection<?> collection) {
                     Type genericType = components[i].getGenericType();
-                    args[i] = convert(value, getGenericType(genericType));
+                    args[i] = convertCollection(collection, components[i].getType(), getGenericType(genericType));
                 } else {
-                    args[i] = convert(value, type);
+                    args[i] = convert(value, components[i].getType());
                 }
             }
-            Constructor<T> constructor = c.getConstructor(types);
+            Constructor<E> constructor = type.getConstructor(types);
             constructor.setAccessible(true);
-            result = constructor.newInstance(args);
+            return constructor.newInstance(args);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return result;
     }
 
-    /**
-     * Converts a collection to a list of the specified target type.
-     * This method iterates over the collection's elements and converts each element.
-     *
-     * @param collection the collection to convert.
-     * @param type       the target type class.
-     * @param <T>        the target type.
-     * @return the converted list.
-     */
-    @SuppressWarnings("unchecked")
-    private <T> @NotNull T convertCollection(@NotNull final Collection<?> collection, final Class<T> type) {
-        List<Object> list = new ArrayList<>();
+    private <E> E convertCollection(final Collection<?> collection, final Class<E> type) {
+        Collection<Object> list = ObjectTypeProvider.getCollectionInstance(type);
+        if (list == null) {
+            throw new ObjectConverterException("Invalid collection type provided");
+        }
         for (Object value : collection) {
-            Object converted = convert(value, type);
+            Object converted = convert(value, value.getClass());
             list.add(converted);
         }
-        return (T) list;
+        return type.cast(list);
     }
 
-    /**
-     * Gets the generic type from a parameterized type.
-     * If the type is not parameterized, the result is null.
-     *
-     * @param type the type to get the generic type from.
-     * @return the generic type class, or null if the type is not parameterized.
-     */
-    @Contract("null -> null")
+    private <E> E convertCollection(final Collection<?> collection, final Class<E> listType, Class<?> elementType) {
+        Collection<Object> list = ObjectTypeProvider.getCollectionInstance(listType);
+        if (list == null) {
+            throw new ObjectConverterException("Invalid collection type provided");
+        }
+        for (Object value : collection) {
+            Object converted = convert(value, elementType);
+            list.add(converted);
+        }
+        return listType.cast(list);
+    }
+
     private Class<?> getGenericType(final Type type) {
         Class<?> result = null;
         if (type instanceof ParameterizedType parameterizedType) {

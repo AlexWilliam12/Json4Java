@@ -2,14 +2,16 @@ package no.foundation.serializer;
 
 import no.foundation.serializer.exceptions.ObjectConverterException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import javax.management.AttributeList;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.*;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
-import java.util.Date;
-import java.util.TimeZone;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Utility class that provides methods to identify and convert basic object types.
@@ -174,6 +176,128 @@ final class ObjectTypeProvider {
             result = new BigInteger(number.toString());
         } else if (type.equals(BigDecimal.class)) {
             result = new BigDecimal(number.toString());
+        }
+        return result;
+    }
+
+    /**
+     * Retrieves an instance of a collection based on the specified type.
+     * Returns null if no matching collection type is found.
+     *
+     * @param type the class type representing the desired collection.
+     * @param <T>  the type of elements that the collection can hold.
+     * @return an instance of the collection specified by {@code type}, or null if no match is found.
+     */
+    @SuppressWarnings("IfCanBeSwitch")
+    public static <T> @Nullable Collection<Object> getCollectionInstance(@NotNull final Class<T> type) {
+        @Nullable Collection<Object> result = null;
+        if (type.equals(Collection.class)) {
+            result = new ArrayList<>();
+        } else if (type.equals(List.class)) {
+            result = new ArrayList<>();
+        } else if (type.equals(NavigableSet.class)) {
+            result = new TreeSet<>();
+        } else if (type.equals(Set.class)) {
+            result = new HashSet<>();
+        } else if (type.equals(LinkedList.class)) {
+            result = new LinkedList<>();
+        } else if (type.equals(Queue.class)) {
+            result = new LinkedList<>();
+        } else if (type.equals(Stack.class)) {
+            result = new Stack<>();
+        } else if (type.equals(HashSet.class)) {
+            result = new HashSet<>();
+        } else if (type.equals(LinkedHashSet.class)) {
+            result = new LinkedHashSet<>();
+        } else if (type.equals(SortedSet.class)) {
+            result = new TreeSet<>();
+        } else if (type.equals(PriorityQueue.class)) {
+            result = new PriorityQueue<>();
+        } else if (type.equals(TreeSet.class)) {
+            result = new TreeSet<>();
+        } else if (type.equals(ArrayDeque.class)) {
+            result = new ArrayDeque<>();
+        } else if (type.equals(BlockingDeque.class)) {
+            result = new LinkedBlockingDeque<>();
+        } else if (type.equals(BlockingQueue.class)) {
+            result = new LinkedBlockingDeque<>();
+        } else if (type.equals(Deque.class)) {
+            result = new LinkedList<>();
+        } else if (type.equals(TransferQueue.class)) {
+            result = new LinkedTransferQueue<>();
+        } else if (type.equals(LinkedBlockingDeque.class)) {
+            result = new LinkedBlockingDeque<>();
+        } else if (type.equals(ArrayBlockingQueue.class)) {
+            result = new ArrayDeque<>();
+        } else if (type.equals(DelayQueue.class)) {
+            result = new LinkedBlockingDeque<>();
+        } else if (type.equals(LinkedBlockingQueue.class)) {
+            result = new LinkedBlockingDeque<>();
+        } else if (type.equals(PriorityBlockingQueue.class)) {
+            result = new PriorityBlockingQueue<>();
+        } else if (type.equals(SynchronousQueue.class)) {
+            result = new SynchronousQueue<>();
+        } else if (type.equals(ConcurrentLinkedQueue.class)) {
+            result = new ConcurrentLinkedQueue<>();
+        } else if (type.equals(LinkedTransferQueue.class)) {
+            result = new LinkedTransferQueue<>();
+        } else if (type.equals(ConcurrentLinkedDeque.class)) {
+            result = new ConcurrentLinkedDeque<>();
+        } else if (type.equals(AbstractList.class)) {
+            result = new ArrayList<>();
+        } else if (type.equals(CopyOnWriteArrayList.class)) {
+            result = new CopyOnWriteArrayList<>();
+        } else if (type.equals(CopyOnWriteArraySet.class)) {
+            result = new CopyOnWriteArraySet<>();
+        } else if (type.equals(AbstractSequentialList.class)) {
+            result = new ArrayList<>();
+        } else if (type.equals(AttributeList.class)) {
+            result = new AttributeList();
+        } else if (type.equals(Vector.class)) {
+            result = new Vector<>();
+        } else if (type.equals(ConcurrentSkipListSet.class)) {
+            result = new ConcurrentSkipListSet<>();
+        } else if (type.equals(AbstractSet.class)) {
+            result = new HashSet<>();
+        } else if (type.equals(ConcurrentHashMap.KeySetView.class)) {
+            result = new ConcurrentSkipListSet<>();
+        } else if (type.equals(EnumSet.class)) {
+            result = new HashSet<>();
+        }
+        return result;
+    }
+
+    /**
+     * Retrieves an instance of a map based on the specified type.
+     * Returns null if no matching map type is found.
+     *
+     * @param type the class type representing the desired map.
+     * @param <T>  the type of keys and values that the map can hold.
+     * @return an instance of the map specified by {@code type}, or null if no match is found.
+     */
+    @SuppressWarnings("IfCanBeSwitch")
+    public static <T> @Nullable Map<Object, Object> getMapInstance(@NotNull final Class<T> type) {
+        @Nullable Map<Object, Object> result = null;
+        if (type.equals(Map.class)) {
+            result = new LinkedHashMap<>();
+        } else if (type.equals(HashMap.class)) {
+            result = new HashMap<>();
+        } else if (type.equals(TreeMap.class)) {
+            result = new TreeMap<>();
+        } else if (type.equals(ConcurrentMap.class)) {
+            result = new ConcurrentHashMap<>();
+        } else if (type.equals(ConcurrentHashMap.class)) {
+            result = new ConcurrentHashMap<>();
+        } else if (type.equals(WeakHashMap.class)) {
+            result = new WeakHashMap<>();
+        } else if (type.equals(ConcurrentSkipListMap.class)) {
+            result = new ConcurrentSkipListMap<>();
+        } else if (type.equals(ConcurrentNavigableMap.class)) {
+            result = new ConcurrentSkipListMap<>();
+        } else if (type.equals(NavigableMap.class)) {
+            result = new TreeMap<>();
+        } else if (type.equals(SortedMap.class)) {
+            result = new TreeMap<>();
         }
         return result;
     }

@@ -1,7 +1,7 @@
 package no.foundation.serializer.tree;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +33,7 @@ public sealed interface JsonNode permits JsonValue, JsonArray, JsonObject {
             }
             case JsonObject object -> {
                 Map<String, JsonNode> pairs = object.getPairs();
-                Map<String, Object> map = new HashMap<>();
+                Map<String, Object> map = new LinkedHashMap<>();
                 for (var entry : pairs.entrySet()) {
                     String key = entry.getKey();
                     JsonNode value = entry.getValue();

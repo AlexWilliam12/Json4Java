@@ -12,4 +12,13 @@ public final class ObjectConverterException extends RuntimeException {
     public ObjectConverterException(final Throwable cause) {
         super(cause);
     }
+
+    /**
+     * Constructs an {@code ObjectConverterException} with the specified detail message.
+     *
+     * @param message the detail message (which is saved for later retrieval by the {@link #getMessage()} method)
+     */
+    public ObjectConverterException(String message) {
+        super(message);
+    }
 }
