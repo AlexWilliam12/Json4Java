@@ -34,11 +34,13 @@ final class JsonDecoder {
      * @throws JsonException if there is an error during JSON decoding
      * @throws IOException   if an I/O error occurs
      */
-    <T> T decode(final File file, final Class<T> type) throws JsonException, IOException {
+    <T> T decode(File file, Class<T> type) throws JsonException, IOException {
         String src = readInput(new FileInputStream(file), true);
         List<JsonToken> tokens = lexer.tokenize(src);
-        JsonNode node = new JsonParser(tokens).parse();
-        return new ObjectConverter<>(type).convert(node.getOriginalType());
+        JsonParser parser = new JsonParser(tokens);
+        JsonNode node = parser.parse();
+        ObjectConverter converter = new ObjectConverter();
+        return converter.convert(node.getOriginalType(), type);
     }
 
     /**
@@ -49,10 +51,11 @@ final class JsonDecoder {
      * @throws JsonException if there is an error during JSON decoding
      * @throws IOException   if an I/O error occurs
      */
-    JsonNode decode(final File file) throws JsonException, IOException {
+    JsonNode decode(File file) throws JsonException, IOException {
         String src = readInput(new FileInputStream(file), true);
         List<JsonToken> tokens = lexer.tokenize(src);
-        return new JsonParser(tokens).parse();
+        JsonParser parser = new JsonParser(tokens);
+        return parser.parse();
     }
 
     /**
@@ -66,11 +69,13 @@ final class JsonDecoder {
      * @throws JsonException if there is an error during JSON decoding
      * @throws IOException   if an I/O error occurs
      */
-    <T> T decode(final InputStream stream, final Class<T> type, final boolean autoClose) throws JsonException, IOException {
+    <T> T decode(InputStream stream, Class<T> type, boolean autoClose) throws JsonException, IOException {
         String src = readInput(stream, autoClose);
         List<JsonToken> tokens = lexer.tokenize(src);
-        JsonNode node = new JsonParser(tokens).parse();
-        return new ObjectConverter<>(type).convert(node.getOriginalType());
+        JsonParser parser = new JsonParser(tokens);
+        JsonNode node = parser.parse();
+        ObjectConverter converter = new ObjectConverter();
+        return converter.convert(node.getOriginalType(), type);
     }
 
     /**
@@ -82,10 +87,11 @@ final class JsonDecoder {
      * @throws JsonException if there is an error during JSON decoding
      * @throws IOException   if an I/O error occurs
      */
-    JsonNode decode(final InputStream stream, final boolean autoClose) throws JsonException, IOException {
+    JsonNode decode(InputStream stream, boolean autoClose) throws JsonException, IOException {
         String src = readInput(stream, autoClose);
         List<JsonToken> tokens = lexer.tokenize(src);
-        return new JsonParser(tokens).parse();
+        JsonParser parser = new JsonParser(tokens);
+        return parser.parse();
     }
 
     /**
@@ -97,10 +103,12 @@ final class JsonDecoder {
      * @return the decoded object
      * @throws JsonException if there is an error during JSON decoding
      */
-    <T> T decode(final String src, final Class<T> type) throws JsonException {
+    <T> T decode(String src, Class<T> type) throws JsonException {
         List<JsonToken> tokens = lexer.tokenize(src);
-        JsonNode node = new JsonParser(tokens).parse();
-        return new ObjectConverter<>(type).convert(node.getOriginalType());
+        JsonParser parser = new JsonParser(tokens);
+        JsonNode node = parser.parse();
+        ObjectConverter converter = new ObjectConverter();
+        return converter.convert(node.getOriginalType(), type);
     }
 
     /**
@@ -110,9 +118,10 @@ final class JsonDecoder {
      * @return the decoded {@link JsonNode}
      * @throws JsonException if there is an error during JSON decoding
      */
-    JsonNode decode(final String src) throws JsonException {
+    JsonNode decode(String src) throws JsonException {
         List<JsonToken> tokens = lexer.tokenize(src);
-        return new JsonParser(tokens).parse();
+        JsonParser parser = new JsonParser(tokens);
+        return parser.parse();
     }
 
     /**
@@ -123,8 +132,7 @@ final class JsonDecoder {
      * @return the string read from the input stream
      * @throws IOException if an I/O error occurs
      */
-    private @NotNull String readInput(final InputStream stream, final boolean autoClose) throws IOException {
-        @NotNull String result;
+    private @NotNull String readInput(InputStream stream, boolean autoClose) throws IOException {
         BufferedInputStream reader = null;
         try {
             reader = new BufferedInputStream(stream);
@@ -135,7 +143,7 @@ final class JsonDecoder {
                 if (read == -1) break;
                 sb.append(new String(buffer, 0, read, StandardCharsets.UTF_8));
             }
-            result = sb.toString();
+            return sb.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
@@ -143,6 +151,5 @@ final class JsonDecoder {
                 reader.close();
             }
         }
-        return result;
     }
 }

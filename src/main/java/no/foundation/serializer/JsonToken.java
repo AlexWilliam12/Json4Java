@@ -4,7 +4,7 @@ package no.foundation.serializer;
  * Record representing a JSON token with a specific type and value.
  */
 record JsonToken(
-        JsonToken.TokenType type,
+        TokenType type,
         String value
 ) {
 

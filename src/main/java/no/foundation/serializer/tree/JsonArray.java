@@ -20,6 +20,15 @@ public final class JsonArray implements List<JsonNode>, JsonNode {
         values = new ArrayList<>();
     }
 
+    public static @NotNull JsonArray of(Object @NotNull ... values) {
+        JsonConverter converter = new JsonConverter();
+        JsonArray array = new JsonArray();
+        for (Object value : values) {
+            array.add(converter.convert(value));
+        }
+        return array;
+    }
+
     /**
      * Returns the underlying list of {@link JsonNode} values in this JSON array.
      *

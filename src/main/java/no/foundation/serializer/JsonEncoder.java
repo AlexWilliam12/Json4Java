@@ -22,6 +22,16 @@ final class JsonEncoder {
         this.printer = new JsonPrinter();
     }
 
+    String encode(JsonNode node, boolean formatted) {
+        // TODO: documentation
+        return printer.print(node, formatted);
+    }
+
+    String encode(JsonNode node) {
+        // TODO: documentation
+        return printer.print(node, false);
+    }
+
     /**
      * Encodes the specified object into a JSON string.
      *
@@ -29,7 +39,7 @@ final class JsonEncoder {
      * @return the JSON string representation of the object.
      * @throws NullPointerException if the specified object is null.
      */
-    String encode(final Object value) {
+    String encode(Object value) {
         JsonNode node = partitioner.partition(Objects.requireNonNull(value));
         return printer.print(node, false);
     }
@@ -42,7 +52,7 @@ final class JsonEncoder {
      * @return the JSON string representation of the object.
      * @throws NullPointerException if the specified object is null.
      */
-    String encode(final Object value, final boolean formatted) {
+    String encode(Object value, boolean formatted) {
         JsonNode node = partitioner.partition(Objects.requireNonNull(value));
         return printer.print(node, formatted);
     }

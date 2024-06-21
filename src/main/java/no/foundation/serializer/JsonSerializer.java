@@ -10,10 +10,9 @@ import java.util.Objects;
 
 /**
  * Utility class that provides methods for encoding objects to JSON strings
- * and decoding JSON strings to objects.
- * This class is final and cannot be subclassed.
+ * and decoding JSON strings to objects
  */
-public final class JsonSerializer {
+public class JsonSerializer {
 
     private final JsonEncoder encoder;
     private final JsonDecoder decoder;
@@ -26,13 +25,23 @@ public final class JsonSerializer {
         this.decoder = new JsonDecoder();
     }
 
+    public synchronized String encode(JsonNode node) {
+        // TODO: documentation
+        return encoder.encode(Objects.requireNonNull(node));
+    }
+
+    public synchronized String encode(JsonNode node, boolean formatted) {
+        // TODO: documentation
+        return encoder.encode(Objects.requireNonNull(node), formatted);
+    }
+
     /**
      * Encodes the given object to a JSON string.
      *
      * @param value the object to encode.
      * @return the JSON string representation of the object.
      */
-    public String encode(final Object value) {
+    public synchronized String encode(Object value) {
         return encoder.encode(value);
     }
 
@@ -43,7 +52,7 @@ public final class JsonSerializer {
      * @param formatted whether the JSON string should be formatted.
      * @return the JSON string representation of the object.
      */
-    public String encode(final Object value, final boolean formatted) {
+    public synchronized String encode(Object value, boolean formatted) {
         return encoder.encode(value, formatted);
     }
 
@@ -57,7 +66,7 @@ public final class JsonSerializer {
      * @throws JsonException if an error occurs during decoding.
      * @throws IOException   if an I/O error occurs.
      */
-    public <T> T decode(final File file, final Class<T> c) throws JsonException, IOException {
+    public synchronized <T> T decode(File file, Class<T> c) throws JsonException, IOException {
         return decoder.decode(Objects.requireNonNull(file), c);
     }
 
@@ -69,7 +78,7 @@ public final class JsonSerializer {
      * @throws JsonException if an error occurs during decoding.
      * @throws IOException   if an I/O error occurs.
      */
-    public JsonNode decode(final File file) throws JsonException, IOException {
+    public synchronized JsonNode decode(File file) throws JsonException, IOException {
         return decoder.decode(Objects.requireNonNull(file));
     }
 
@@ -84,7 +93,7 @@ public final class JsonSerializer {
      * @throws JsonException if an error occurs during decoding.
      * @throws IOException   if an I/O error occurs.
      */
-    public <T> T decode(final InputStream stream, final Class<T> c, boolean autoClose) throws JsonException, IOException {
+    public synchronized <T> T decode(InputStream stream, Class<T> c, boolean autoClose) throws JsonException, IOException {
         return decoder.decode(Objects.requireNonNull(stream), c, autoClose);
     }
 
@@ -97,7 +106,7 @@ public final class JsonSerializer {
      * @throws JsonException if an error occurs during decoding.
      * @throws IOException   if an I/O error occurs.
      */
-    public JsonNode decode(final InputStream stream, final boolean autoClose) throws JsonException, IOException {
+    public synchronized JsonNode decode(InputStream stream, boolean autoClose) throws JsonException, IOException {
         return decoder.decode(Objects.requireNonNull(stream), autoClose);
     }
 
@@ -111,7 +120,7 @@ public final class JsonSerializer {
      * @throws JsonException if an error occurs during decoding.
      * @throws IOException   if an I/O error occurs.
      */
-    public <T> T decode(final InputStream stream, final Class<T> c) throws JsonException, IOException {
+    public synchronized <T> T decode(InputStream stream, Class<T> c) throws JsonException, IOException {
         return decoder.decode(Objects.requireNonNull(stream), c, true);
     }
 
@@ -123,7 +132,7 @@ public final class JsonSerializer {
      * @throws JsonException if an error occurs during decoding.
      * @throws IOException   if an I/O error occurs.
      */
-    public JsonNode decode(final InputStream stream) throws JsonException, IOException {
+    public synchronized JsonNode decode(InputStream stream) throws JsonException, IOException {
         return decoder.decode(Objects.requireNonNull(stream), true);
     }
 
@@ -136,7 +145,7 @@ public final class JsonSerializer {
      * @return the decoded object.
      * @throws JsonException if an error occurs during decoding.
      */
-    public <T> T decode(final String src, final Class<T> c) throws JsonException {
+    public synchronized <T> T decode(String src, Class<T> c) throws JsonException {
         return decoder.decode(Objects.requireNonNull(src), c);
     }
 
@@ -147,7 +156,7 @@ public final class JsonSerializer {
      * @return the decoded object.
      * @throws JsonException if an error occurs during decoding.
      */
-    public JsonNode decode(final String src) throws JsonException {
+    public synchronized JsonNode decode(String src) throws JsonException {
         return decoder.decode(Objects.requireNonNull(src));
     }
 }

@@ -5,9 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-public class JsonNormalEncoderTest {
+public class JsonEncoderObjectsTest {
 
     @Test
     public void encodeTeacherPojo() {
@@ -20,9 +18,11 @@ public class JsonNormalEncoderTest {
 
         JsonSerializer serializer = new JsonSerializer();
         String encoded = serializer.encode(teacher);
-        assertNotNull(encoded);
+        String encodedWellFormatted = serializer.encode(teacher, true);
 
-        System.out.println("Encoded Object: " + encoded);
+        System.out.println("Encoded: " + encoded);
+        System.out.println();
+        System.out.println("Encoded well formatted: " + encodedWellFormatted);
     }
 
     @Test
@@ -37,9 +37,11 @@ public class JsonNormalEncoderTest {
 
         JsonSerializer serializer = new JsonSerializer();
         String encoded = serializer.encode(teacher);
-        assertNotNull(encoded);
+        String encodedWellFormatted = serializer.encode(teacher, true);
 
-        System.out.println("Encoded Object: " + encoded);
+        System.out.println("Encoded: " + encoded);
+        System.out.println();
+        System.out.println("Encoded well formatted: " + encodedWellFormatted);
     }
 
     @Test
@@ -66,9 +68,11 @@ public class JsonNormalEncoderTest {
 
         JsonSerializer serializer = new JsonSerializer();
         String encoded = serializer.encode(student);
-        assertNotNull(encoded);
+        String encodedWellFormatted = serializer.encode(student, true);
 
-        System.out.println("Encoded Object: " + encoded);
+        System.out.println("Encoded: " + encoded);
+        System.out.println();
+        System.out.println("Encoded well formatted: " + encodedWellFormatted);
     }
 
     @Test
@@ -98,9 +102,11 @@ public class JsonNormalEncoderTest {
 
         JsonSerializer serializer = new JsonSerializer();
         String encoded = serializer.encode(student);
-        assertNotNull(encoded);
+        String encodedWellFormatted = serializer.encode(student, true);
 
-        System.out.println("Encoded Object: " + encoded);
+        System.out.println("Encoded: " + encoded);
+        System.out.println();
+        System.out.println("Encoded well formatted: " + encodedWellFormatted);
     }
 
     @Test
@@ -133,9 +139,11 @@ public class JsonNormalEncoderTest {
 
         JsonSerializer serializer = new JsonSerializer();
         String encoded = serializer.encode(course);
-        assertNotNull(encoded);
+        String encodedWellFormatted = serializer.encode(course, true);
 
-        System.out.println("Encoded Object: " + encoded);
+        System.out.println("Encoded: " + encoded);
+        System.out.println();
+        System.out.println("Encoded well formatted: " + encodedWellFormatted);
     }
 
     @Test
@@ -172,8 +180,10 @@ public class JsonNormalEncoderTest {
 
         JsonSerializer serializer = new JsonSerializer();
         String encoded = serializer.encode(course);
-        assertNotNull(encoded);
+        String encodedWellFormatted = serializer.encode(course, true);
 
-        System.out.println("Encoded Object: " + encoded);
+        System.out.println("Encoded: " + encoded);
+        System.out.println();
+        System.out.println("Encoded well formatted: " + encodedWellFormatted);
     }
 }

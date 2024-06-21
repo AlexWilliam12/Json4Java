@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class JsonDecoderToObjectTest {
+public class JsonDecoderObjectTest {
 
     @Test
     public void decodeToTeacherPojo() {

@@ -1,5 +1,6 @@
 package no.foundation.serializer;
 
+import no.foundation.serializer.annotations.JsonIgnore;
 import no.foundation.serializer.tree.JsonArray;
 import no.foundation.serializer.tree.JsonNode;
 import no.foundation.serializer.tree.JsonObject;
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Utility class that provides methods to partition an object into a JSON representation.
@@ -24,16 +26,26 @@ final class ObjectPartitioner {
      * @param value the object to partition.
      * @return the JSON node representing the partitioned object.
      */
-    JsonNode partition(final Object value) {
-        JsonNode result;
+    JsonNode partition(Object value) {
         if (ObjectTypeProvider.isBasicType(value)) {
-            result = partitionValue(value);
+            return partitionValue(value);
         } else if (value instanceof Collection<?> collection) {
-            result = partitionList(collection);
-        } else {
-            result = partitionObject(value);
+            return partitionList(collection);
+        } else if (value instanceof Map<?, ?> map) {
+            return partitionMap(map);
         }
-        return result;
+        return partitionObject(value);
+    }
+
+    private @NotNull JsonObject partitionMap(@NotNull Map<?, ?> map) {
+        // TODO: documentation and test
+        JsonObject obj = new JsonObject();
+        for (Map.Entry<?, ?> entry : map.entrySet()) {
+            String key = entry.getKey().toString();
+            Object value = entry.getValue();
+            obj.put(key, partition(value));
+        }
+        return obj;
     }
 
     /**
@@ -43,12 +55,14 @@ final class ObjectPartitioner {
      * @param obj the complex object to partition.
      * @return the JSON object representing the partitioned fields.
      */
-    private @NotNull JsonObject partitionObject(@NotNull final Object obj) {
+    private @NotNull JsonObject partitionObject(@NotNull Object obj) {
         Field[] fields = obj.getClass().getDeclaredFields();
         JsonObject object = new JsonObject();
         for (Field field : fields) {
             try {
                 field.setAccessible(true);
+                JsonIgnore annotation = field.getAnnotation(JsonIgnore.class);
+                if (isIgnoredField(annotation)) continue;
                 String key = field.getName();
                 Object value = field.get(obj);
                 object.put(key, partition(value));
@@ -66,7 +80,7 @@ final class ObjectPartitioner {
      * @param collection the collection to partition.
      * @return the JSON array representing the partitioned elements.
      */
-    private @NotNull JsonArray partitionList(@NotNull final Collection<?> collection) {
+    private @NotNull JsonArray partitionList(@NotNull Collection<?> collection) {
         JsonArray array = new JsonArray();
         for (Object value : collection) {
             array.add(partition(value));
@@ -82,7 +96,11 @@ final class ObjectPartitioner {
      * @return the JSON value representing the partitioned value.
      */
     @Contract("_ -> new")
-    private @NotNull JsonValue<?> partitionValue(final Object value) {
+    private @NotNull JsonValue<?> partitionValue(Object value) {
         return new JsonValue<>(value);
+    }
+
+    private boolean isIgnoredField(JsonIgnore annotation) {
+        return annotation != null && annotation.onlyEncoder();
     }
 }

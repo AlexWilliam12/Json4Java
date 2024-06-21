@@ -17,7 +17,7 @@ import java.util.concurrent.*;
  * Utility class that provides methods to identify and convert basic object types.
  * This class is final and cannot be subclassed.
  */
-final class ObjectTypeProvider {
+public final class ObjectTypeProvider {
 
     /**
      * Determines if the given object is of a basic type.
@@ -26,7 +26,7 @@ final class ObjectTypeProvider {
      * @param value the object to check.
      * @return true if the object is of a basic type, false otherwise.
      */
-    static boolean isBasicType(final Object value) {
+    public static boolean isBasicType(Object value) {
         return isString(value)
                 || isNumber(value)
                 || isBoolean(value)
@@ -40,7 +40,7 @@ final class ObjectTypeProvider {
      * @param value the object to check.
      * @return true if the object is null, false otherwise.
      */
-    static boolean isNull(final Object value) {
+    static boolean isNull(Object value) {
         return value == null;
     }
 
@@ -50,7 +50,7 @@ final class ObjectTypeProvider {
      * @param value the object to check.
      * @return true if the object is a Boolean, false otherwise.
      */
-    static boolean isBoolean(final Object value) {
+    static boolean isBoolean(Object value) {
         return value instanceof Boolean;
     }
 
@@ -60,7 +60,7 @@ final class ObjectTypeProvider {
      * @param value the object to check.
      * @return true if the object is a Number, false otherwise.
      */
-    static boolean isNumber(final Object value) {
+    static boolean isNumber(Object value) {
         return value instanceof Number;
     }
 
@@ -70,8 +70,14 @@ final class ObjectTypeProvider {
      * @param value the object to check.
      * @return true if the object is a String, false otherwise.
      */
-    static boolean isString(final Object value) {
+    static boolean isString(Object value) {
         return value instanceof String;
+    }
+
+    static boolean isTemporal(@NotNull Class<?> type) {
+        return type.isInstance(Temporal.class)
+                || type.isInstance(Date.class)
+                || type.isInstance(TimeZone.class);
     }
 
     /**
@@ -81,7 +87,7 @@ final class ObjectTypeProvider {
      * @param value the object to check.
      * @return true if the object is a temporal type, false otherwise.
      */
-    static boolean isTemporal(final Object value) {
+    static boolean isTemporal(Object value) {
         return value instanceof Temporal
                 || value instanceof Date
                 || value instanceof TimeZone;
@@ -97,7 +103,7 @@ final class ObjectTypeProvider {
      * @throws ObjectConverterException if the conversion fails due to a parsing error.
      */
     @SuppressWarnings("IfCanBeSwitch")
-    static Object convertTemporal(final Class<?> type, final Object value) {
+    static Object convertTemporal(Class<?> type, Object value) {
         Object result = null;
         if (value instanceof String temporal) {
             try {
@@ -158,7 +164,7 @@ final class ObjectTypeProvider {
      * @return the converted number.
      */
     @SuppressWarnings("IfCanBeSwitch")
-    static Number convertNumber(final Number number, @NotNull final Class<?> type) {
+    static Number convertNumber(Number number, @NotNull Class<?> type) {
         Number result = number;
         if (type.equals(int.class) || type.equals(Integer.class)) {
             result = number.intValue();
@@ -189,7 +195,7 @@ final class ObjectTypeProvider {
      * @return an instance of the collection specified by {@code type}, or null if no match is found.
      */
     @SuppressWarnings("IfCanBeSwitch")
-    public static <T> @Nullable Collection<Object> getCollectionInstance(@NotNull final Class<T> type) {
+    public static <T> @Nullable Collection<Object> getCollectionInstance(@NotNull Class<T> type) {
         @Nullable Collection<Object> result = null;
         if (type.equals(Collection.class)) {
             result = new ArrayList<>();
@@ -276,7 +282,7 @@ final class ObjectTypeProvider {
      * @return an instance of the map specified by {@code type}, or null if no match is found.
      */
     @SuppressWarnings("IfCanBeSwitch")
-    public static <T> @Nullable Map<Object, Object> getMapInstance(@NotNull final Class<T> type) {
+    public static <T> @Nullable Map<Object, Object> getMapInstance(@NotNull Class<T> type) {
         @Nullable Map<Object, Object> result = null;
         if (type.equals(Map.class)) {
             result = new LinkedHashMap<>();

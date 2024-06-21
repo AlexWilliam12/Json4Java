@@ -7,6 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import static no.foundation.serializer.JsonToken.TokenType;
+
 /**
  * Lexer class for tokenizing a JSON string into a list of JSON tokens.
  * This class is final and cannot be subclassed.
@@ -32,33 +34,33 @@ final class JsonLexer {
      * @throws JsonException if an unexpected character is encountered.
      */
     @NotNull
-    List<JsonToken> tokenize(@NotNull final String expr) {
+    List<JsonToken> tokenize(@NotNull String expr) {
         List<JsonToken> tokens = new ArrayList<>();
         while (index < expr.length()) {
             char c = expr.charAt(index);
             switch (c) {
                 case '{' -> {
-                    tokens.add(tokenize(JsonToken.TokenType.LEFT_BRACE, String.valueOf(c)));
+                    tokens.add(tokenize(TokenType.LEFT_BRACE, String.valueOf(c)));
                     index++;
                 }
                 case '}' -> {
-                    tokens.add(tokenize(JsonToken.TokenType.RIGHT_BRACE, String.valueOf(c)));
+                    tokens.add(tokenize(TokenType.RIGHT_BRACE, String.valueOf(c)));
                     index++;
                 }
                 case '[' -> {
-                    tokens.add(tokenize(JsonToken.TokenType.LEFT_BRACKET, String.valueOf(c)));
+                    tokens.add(tokenize(TokenType.LEFT_BRACKET, String.valueOf(c)));
                     index++;
                 }
                 case ']' -> {
-                    tokens.add(tokenize(JsonToken.TokenType.RIGHT_BRACKET, String.valueOf(c)));
+                    tokens.add(tokenize(TokenType.RIGHT_BRACKET, String.valueOf(c)));
                     index++;
                 }
                 case ',' -> {
-                    tokens.add(tokenize(JsonToken.TokenType.COMMA, String.valueOf(c)));
+                    tokens.add(tokenize(TokenType.COMMA, String.valueOf(c)));
                     index++;
                 }
                 case ':' -> {
-                    tokens.add(tokenize(JsonToken.TokenType.COLON, String.valueOf(c)));
+                    tokens.add(tokenize(TokenType.COLON, String.valueOf(c)));
                     index++;
                 }
                 case '"' -> tokens.add(tokenizeString(expr));
@@ -81,16 +83,16 @@ final class JsonLexer {
      * @return the JSON token representing the literal.
      * @throws JsonException if an unexpected token is encountered.
      */
-    private @NotNull JsonToken tokenizeLiteral(@NotNull final String expr) {
+    private @NotNull JsonToken tokenizeLiteral(@NotNull String expr) {
         StringBuilder sb = new StringBuilder();
         while (index < expr.length() && Character.isLetter(expr.charAt(index))) {
             sb.append(expr.charAt(index++));
         }
         String value = sb.toString();
         return switch (value) {
-            case "true" -> tokenize(JsonToken.TokenType.TRUE, value);
-            case "false" -> tokenize(JsonToken.TokenType.FALSE, value);
-            case "null" -> tokenize(JsonToken.TokenType.NULL, value);
+            case "true" -> tokenize(TokenType.TRUE, value);
+            case "false" -> tokenize(TokenType.FALSE, value);
+            case "null" -> tokenize(TokenType.NULL, value);
             default -> throw new JsonException("Unexpected token: " + value);
         };
     }
@@ -101,7 +103,7 @@ final class JsonLexer {
      * @param expr the JSON expression.
      * @return the JSON token representing the number.
      */
-    private @NotNull JsonToken tokenizeNumber(@NotNull final String expr) {
+    private @NotNull JsonToken tokenizeNumber(@NotNull String expr) {
         StringBuilder sb = new StringBuilder();
         if (expr.charAt(index) == '-') {
             sb.append('-');
@@ -118,7 +120,7 @@ final class JsonLexer {
                 sb.append(expr.charAt(index++));
             }
         }
-        return tokenize(JsonToken.TokenType.NUMBER, sb.toString());
+        return tokenize(TokenType.NUMBER, sb.toString());
     }
 
     /**
@@ -127,7 +129,7 @@ final class JsonLexer {
      * @param expr the JSON expression.
      * @return the JSON token representing the string.
      */
-    private @NotNull JsonToken tokenizeString(@NotNull final String expr) {
+    private @NotNull JsonToken tokenizeString(@NotNull String expr) {
         StringBuilder sb = new StringBuilder();
         index++;
         char prev = '\0';
@@ -139,7 +141,7 @@ final class JsonLexer {
             index++;
         }
         index++;
-        return tokenize(JsonToken.TokenType.STRING, sb.toString());
+        return tokenize(TokenType.STRING, sb.toString());
     }
 
     /**
@@ -150,7 +152,7 @@ final class JsonLexer {
      * @return the created JSON token.
      */
     @Contract("_, _ -> new")
-    private @NotNull JsonToken tokenize(final JsonToken.TokenType type, final String value) {
+    private @NotNull JsonToken tokenize(TokenType type, String value) {
         return new JsonToken(type, value);
     }
 }

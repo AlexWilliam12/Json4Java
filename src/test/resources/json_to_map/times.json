@@ -1,0 +1,9 @@
+{
+  "localDate": "2024-06-18",
+  "localTime": "14:30:00",
+  "localDateTime": "2024-06-18T14:30:00",
+  "offsetTime": "14:30:00-04:00",
+  "offsetDateTime": "2024-06-18T14:30:00-04:00",
+  "zonedDateTime": "2024-06-18T14:30:00-04:00[America/New_York]",
+  "instant": "2024-06-18T18:30:00Z"
+}

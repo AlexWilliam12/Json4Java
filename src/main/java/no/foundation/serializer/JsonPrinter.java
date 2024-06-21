@@ -21,14 +21,11 @@ final class JsonPrinter {
      * @param formatted whether the output should be formatted.
      * @return the string representation of the JSON node.
      */
-    String print(final JsonNode node, final boolean formatted) {
-        String result;
+    String print(JsonNode node, boolean formatted) {
         if (formatted) {
-            result = printValue(node, 0);
-        } else {
-            result = node.toString();
+            return printValue(node, 0);
         }
-        return result;
+        return node.toString();
     }
 
     /**
@@ -39,7 +36,7 @@ final class JsonPrinter {
      * @param indent the indentation level.
      * @return the string representation of the JSON node's value.
      */
-    private @Nullable String printValue(@NotNull final JsonNode node, final int indent) {
+    private @Nullable String printValue(@NotNull JsonNode node, int indent) {
         return switch (node) {
             case JsonValue<?> value -> value.toString();
             case JsonArray array -> printArray(array, indent);
@@ -55,7 +52,7 @@ final class JsonPrinter {
      * @param indent the indentation level.
      * @return the string representation of the JSON object.
      */
-    private @NotNull String printObject(@NotNull final JsonObject object, final int indent) {
+    private @NotNull String printObject(@NotNull JsonObject object, int indent) {
         @NotNull String result = "{}";
         if (!object.isEmpty()) {
             String tabs = "  ".repeat(indent);
@@ -87,7 +84,7 @@ final class JsonPrinter {
      * @param indent the indentation level.
      * @return the string representation of the JSON array.
      */
-    private @NotNull String printArray(@NotNull final JsonArray array, final int indent) {
+    private @NotNull String printArray(@NotNull JsonArray array, int indent) {
         @NotNull String result = "[]";
         if (!array.isEmpty()) {
             String tabs = "  ".repeat(indent);

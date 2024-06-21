@@ -189,4 +189,31 @@ public final class JsonObject implements Map<String, JsonNode>, JsonNode {
         }
         return result;
     }
+
+    @Contract(value = " -> new", pure = true)
+    public static @NotNull JsonObjectBuilder builder() {
+        return new JsonObjectBuilder();
+    }
+
+    public static class JsonObjectBuilder {
+        private final Map<String, Object> values;
+
+        private JsonObjectBuilder() {
+            this.values = new LinkedHashMap<>();
+        }
+
+        public JsonObjectBuilder put(String key, Object value) {
+            values.put(key, value);
+            return this;
+        }
+
+        public JsonObject build() {
+            JsonConverter converter = new JsonConverter();
+            JsonObject obj = new JsonObject();
+            for (Entry<String, Object> entry : values.entrySet()) {
+                obj.put(entry.getKey(), converter.convert(entry.getValue()));
+            }
+            return obj;
+        }
+    }
 }

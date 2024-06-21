@@ -9,7 +9,7 @@ public final class ObjectConverterException extends RuntimeException {
      *
      * @param cause the cause of the exception
      */
-    public ObjectConverterException(final Throwable cause) {
+    public ObjectConverterException(Throwable cause) {
         super(cause);
     }
 

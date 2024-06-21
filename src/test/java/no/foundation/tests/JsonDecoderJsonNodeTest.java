@@ -10,7 +10,7 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class JsonDecoderToJsonNodeTest {
+public class JsonDecoderJsonNodeTest {
 
     private static File directory;
 

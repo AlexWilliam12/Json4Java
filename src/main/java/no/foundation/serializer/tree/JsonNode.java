@@ -24,20 +24,20 @@ public sealed interface JsonNode permits JsonValue, JsonArray, JsonObject {
         return switch (this) {
             case JsonValue<?> value -> value.value();
             case JsonArray array -> {
-                List<JsonNode> values = array.getValues();
-                List<Object> list = new ArrayList<>();
-                for (JsonNode value : values) {
-                    list.add(value.getOriginalType());
+                List<JsonNode> nodes = array.getValues();
+                List<Object> list = new ArrayList<>(array.size());
+                for (JsonNode node : nodes) {
+                    list.add(node.getOriginalType());
                 }
                 yield list;
             }
             case JsonObject object -> {
                 Map<String, JsonNode> pairs = object.getPairs();
-                Map<String, Object> map = new LinkedHashMap<>();
-                for (var entry : pairs.entrySet()) {
-                    String key = entry.getKey();
-                    JsonNode value = entry.getValue();
-                    map.put(key, value.getOriginalType());
+                Map<String, Object> map = new LinkedHashMap<>(pairs.size());
+                for (var pair : pairs.entrySet()) {
+                    String key = pair.getKey();
+                    JsonNode node = pair.getValue();
+                    map.put(key, node.getOriginalType());
                 }
                 yield map;
             }

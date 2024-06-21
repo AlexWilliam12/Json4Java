@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
+import static no.foundation.serializer.JsonToken.TokenType;
+
 /**
  * Parser class for converting a list of JSON tokens into JSON nodes.
  * This class is final and cannot be subclassed.
@@ -27,7 +29,7 @@ final class JsonParser {
      * @param tokens the list of JSON tokens to parse.
      */
     @Contract(pure = true)
-    JsonParser(final List<JsonToken> tokens) {
+    JsonParser(List<JsonToken> tokens) {
         this.tokens = tokens;
         this.index = 0;
     }
@@ -49,27 +51,29 @@ final class JsonParser {
      * @return the parsed JSON node.
      */
     private JsonNode parseValue() {
-        JsonNode result;
-        if (check(JsonToken.TokenType.LEFT_BRACE)) {
-            result = parseObject();
-        } else if (check(JsonToken.TokenType.LEFT_BRACKET)) {
-            result = parseArray();
-        } else if (check(JsonToken.TokenType.STRING)) {
-            result = new JsonValue<>(expect(JsonToken.TokenType.STRING).value());
-        } else if (check(JsonToken.TokenType.NUMBER)) {
-            result = new JsonValue<>(parseNumber(expect(JsonToken.TokenType.NUMBER).value()));
-        } else if (check(JsonToken.TokenType.TRUE)) {
-            result = new JsonValue<>(Boolean.parseBoolean(expect(JsonToken.TokenType.TRUE).value()));
-        } else if (check(JsonToken.TokenType.FALSE)) {
-            result = new JsonValue<>(Boolean.parseBoolean(expect(JsonToken.TokenType.FALSE).value()));
-        } else if (check(JsonToken.TokenType.NULL)) {
-            expect(JsonToken.TokenType.NULL);
-            result = new JsonValue<>(null);
+        if (check(TokenType.LEFT_BRACE)) {
+            return parseObject();
+        } else if (check(TokenType.LEFT_BRACKET)) {
+            return parseArray();
+        } else if (check(TokenType.STRING)) {
+            String value = expect(TokenType.STRING).value();
+            return new JsonValue<>(value);
+        } else if (check(TokenType.NUMBER)) {
+            String value = expect(TokenType.NUMBER).value();
+            return new JsonValue<>(parseNumber(value));
+        } else if (check(TokenType.TRUE)) {
+            String value = expect(TokenType.TRUE).value();
+            return new JsonValue<>(Boolean.parseBoolean(value));
+        } else if (check(TokenType.FALSE)) {
+            String value = expect(TokenType.FALSE).value();
+            return new JsonValue<>(Boolean.parseBoolean(value));
+        } else if (check(TokenType.NULL)) {
+            expect(TokenType.NULL);
+            return new JsonValue<>(null);
         } else {
-            JsonToken.TokenType type = tokens.get(index).type();
+            TokenType type = tokens.get(index).type();
             throw new JsonException("Unexpected token: " + type);
         }
-        return result;
     }
 
     /**
@@ -78,18 +82,18 @@ final class JsonParser {
      * @return the parsed JSON object.
      */
     private @NotNull JsonObject parseObject() {
-        expect(JsonToken.TokenType.LEFT_BRACE);
-        JsonObject map = new JsonObject();
-        while (!check(JsonToken.TokenType.RIGHT_BRACE)) {
-            String key = expect(JsonToken.TokenType.STRING).value();
-            expect(JsonToken.TokenType.COLON);
-            map.put(key, parseValue());
-            if (!check(JsonToken.TokenType.RIGHT_BRACE)) {
-                expect(JsonToken.TokenType.COMMA);
+        expect(TokenType.LEFT_BRACE);
+        JsonObject obj = new JsonObject();
+        while (!check(TokenType.RIGHT_BRACE)) {
+            String key = expect(TokenType.STRING).value();
+            expect(TokenType.COLON);
+            obj.put(key, parseValue());
+            if (!check(TokenType.RIGHT_BRACE)) {
+                expect(TokenType.COMMA);
             }
         }
-        expect(JsonToken.TokenType.RIGHT_BRACE);
-        return map;
+        expect(TokenType.RIGHT_BRACE);
+        return obj;
     }
 
     /**
@@ -98,15 +102,15 @@ final class JsonParser {
      * @return the parsed JSON array.
      */
     private @NotNull JsonArray parseArray() {
-        expect(JsonToken.TokenType.LEFT_BRACKET);
+        expect(TokenType.LEFT_BRACKET);
         JsonArray array = new JsonArray();
-        while (!check(JsonToken.TokenType.RIGHT_BRACKET)) {
+        while (!check(TokenType.RIGHT_BRACKET)) {
             array.add(parseValue());
-            if (!check(JsonToken.TokenType.RIGHT_BRACKET)) {
-                expect(JsonToken.TokenType.COMMA);
+            if (!check(TokenType.RIGHT_BRACKET)) {
+                expect(TokenType.COMMA);
             }
         }
-        expect(JsonToken.TokenType.RIGHT_BRACKET);
+        expect(TokenType.RIGHT_BRACKET);
         return array;
     }
 
@@ -116,7 +120,7 @@ final class JsonParser {
      * @param value the string representation of the number.
      * @return the parsed number.
      */
-    private @NotNull Number parseNumber(@NotNull final String value) {
+    private @NotNull Number parseNumber(@NotNull String value) {
         return value.contains(".")
                 ? new BigDecimal(value)
                 : new BigInteger(value);
@@ -130,9 +134,9 @@ final class JsonParser {
      * @return the current token.
      * @throws JsonException if the current token is not of the expected type.
      */
-    private JsonToken expect(final JsonToken.TokenType type) {
+    private JsonToken expect(TokenType type) {
         if (!check(type)) {
-            JsonToken.TokenType tokenType = tokens.get(index).type();
+            TokenType tokenType = tokens.get(index).type();
             String message = "Expected Token %s but found %s".formatted(type, tokenType);
             throw new JsonException(message);
         }
@@ -145,7 +149,7 @@ final class JsonParser {
      * @param type the token type to check for.
      * @return true if the current token is of the specified type, false otherwise.
      */
-    private boolean check(final JsonToken.TokenType type) {
+    private boolean check(TokenType type) {
         return index < tokens.size() && tokens.get(index).type() == type;
     }
 }

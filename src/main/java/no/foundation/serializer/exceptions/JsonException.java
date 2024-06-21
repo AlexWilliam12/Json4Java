@@ -9,7 +9,7 @@ public final class JsonException extends RuntimeException {
      *
      * @param message the detail message (which is saved for later retrieval by the {@link #getMessage()} method)
      */
-    public JsonException(final String message) {
+    public JsonException(String message) {
         super(message);
     }
 }
