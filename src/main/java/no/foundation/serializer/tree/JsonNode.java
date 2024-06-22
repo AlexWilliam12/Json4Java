@@ -31,8 +31,8 @@ public sealed interface JsonNode permits JsonValue, JsonArray, JsonObject {
                 }
                 yield list;
             }
-            case JsonObject object -> {
-                Map<String, JsonNode> pairs = object.getPairs();
+            case JsonObject obj -> {
+                Map<String, JsonNode> pairs = obj.getPairs();
                 Map<String, Object> map = new LinkedHashMap<>(pairs.size());
                 for (var pair : pairs.entrySet()) {
                     String key = pair.getKey();

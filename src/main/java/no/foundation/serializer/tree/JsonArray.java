@@ -17,7 +17,7 @@ public final class JsonArray implements List<JsonNode>, JsonNode {
      */
     @Contract(pure = true)
     public JsonArray() {
-        values = new ArrayList<>();
+        this.values = new ArrayList<>();
     }
 
     public static @NotNull JsonArray of(Object @NotNull ... values) {

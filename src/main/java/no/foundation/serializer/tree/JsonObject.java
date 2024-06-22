@@ -172,22 +172,22 @@ public final class JsonObject implements Map<String, JsonNode>, JsonNode {
      */
     @Override
     public @NotNull String toString() {
-        @NotNull String result = "{}";
-        if (!pairs.isEmpty()) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("{");
-            for (var entry : pairs.entrySet()) {
-                builder.append('"');
-                builder.append(entry.getKey());
-                builder.append("\": ");
-                builder.append(entry.getValue());
-                builder.append(", ");
-            }
-            builder.delete(builder.length() - 2, builder.length());
-            builder.append("}");
-            result = builder.toString();
+        if (pairs.isEmpty()) {
+            return "{}";
         }
-        return result;
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        for (Entry<String, JsonNode> entry : pairs.entrySet()) {
+            String key = entry.getKey();
+            JsonNode value = entry.getValue();
+            sb.append('"');
+            sb.append(key);
+            sb.append("\": ");
+            sb.append(value);
+            sb.append(", ");
+        }
+        sb.replace(sb.length() - 2, sb.length(), "}");
+        return sb.toString();
     }
 
     @Contract(value = " -> new", pure = true)
@@ -195,9 +195,10 @@ public final class JsonObject implements Map<String, JsonNode>, JsonNode {
         return new JsonObjectBuilder();
     }
 
-    public static class JsonObjectBuilder {
+    public static final class JsonObjectBuilder {
         private final Map<String, Object> values;
 
+        @Contract(pure = true)
         private JsonObjectBuilder() {
             this.values = new LinkedHashMap<>();
         }
@@ -207,7 +208,7 @@ public final class JsonObject implements Map<String, JsonNode>, JsonNode {
             return this;
         }
 
-        public JsonObject build() {
+        public @NotNull JsonObject build() {
             JsonConverter converter = new JsonConverter();
             JsonObject obj = new JsonObject();
             for (Entry<String, Object> entry : values.entrySet()) {
