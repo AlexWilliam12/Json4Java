@@ -16,10 +16,20 @@ class JsonConverter {
             return convertCollection(collection);
         } else if (value instanceof Map<?, ?> map) {
             return convertMap(map);
-        } else {
-            throw new JsonException("");
         }
+	return convertObject(value);
     }
+
+   private @NotNull JsonObject convertObject(@NotNull Object value) {
+	JsonObject object = new JsonObject();
+	Fields[] fields = value.getClass().getDeclaredFields();
+	for (Field field : fields) {
+	   field.setAcessible(true);
+	   String key = field.getName();
+	   object.put(key, convert(field.get(value)));
+	}
+	return object;
+   }
 
     private @NotNull JsonObject convertMap(@NotNull Map<?, ?> map) {
         JsonObject obj = new JsonObject();

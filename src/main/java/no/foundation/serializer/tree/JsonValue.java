@@ -21,13 +21,11 @@ public record JsonValue<T>(T value) implements JsonNode {
      */
     @Override
     public @Nullable String toString() {
-        if (value instanceof Temporal
-                || value instanceof Date
-                || value instanceof TimeZone
-                || value instanceof String
-        ) {
-            return "\"%s\"".formatted(value.toString());
-        }
-        return value == null ? null : value.toString();
+	if (value == null) {
+	   return null;
+	} else if (value instanceof Number || value instanceof Boolean) {
+	   return value.toString();
+	}
+	return "\"%s\"".formatted(value);
     }
 }

@@ -196,23 +196,24 @@ public final class JsonObject implements Map<String, JsonNode>, JsonNode {
     }
 
     public static final class JsonObjectBuilder {
-        private final Map<String, Object> values;
+        private final Map<String, JsonNode> values;
+	private final JsonConverter converter;
 
         @Contract(pure = true)
         private JsonObjectBuilder() {
             this.values = new LinkedHashMap<>();
+	    this.converter = new JsonConverter();
         }
 
         public JsonObjectBuilder put(String key, Object value) {
-            values.put(key, value);
+            values.put(key, converter.convert(value));
             return this;
         }
 
         public @NotNull JsonObject build() {
-            JsonConverter converter = new JsonConverter();
             JsonObject obj = new JsonObject();
             for (Entry<String, Object> entry : values.entrySet()) {
-                obj.put(entry.getKey(), converter.convert(entry.getValue()));
+                obj.put(entry.getKey(), entry.getValue());
             }
             return obj;
         }
