@@ -7,6 +7,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.RecordComponent;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import no.foundation.serializer.annotations.JsonIgnore;
 import no.foundation.serializer.exceptions.JsonException;

@@ -219,4 +219,7 @@ final class TypeProvider {
         }
         return null;
     }
+
+    private TypeProvider() {
+    }
 }
