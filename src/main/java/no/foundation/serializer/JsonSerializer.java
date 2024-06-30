@@ -1,16 +1,15 @@
 package no.foundation.serializer;
 
-import no.foundation.serializer.exceptions.JsonException;
-import no.foundation.serializer.tree.JsonNode;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
+import no.foundation.serializer.exceptions.JsonException;
+import no.foundation.serializer.tree.JsonNode;
 
 /**
- * Utility class that provides methods for encoding objects to JSON strings
- * and decoding JSON strings to objects
+ * Utility class that provides methods for encoding objects to JSON strings and
+ * decoding JSON strings to objects
  */
 public class JsonSerializer {
 
@@ -25,13 +24,24 @@ public class JsonSerializer {
         this.decoder = new JsonDecoder();
     }
 
+    /**
+     * Encodes the given node tree to a JSON string.
+     *
+     * @param node the object to encode.
+     * @return the JSON string representation of the object.
+     */
     public synchronized String encode(JsonNode node) {
-        // TODO: documentation
         return encoder.encode(Objects.requireNonNull(node));
     }
 
+    /**
+     * Encodes the given node tree to a JSON string with optional formatting.
+     *
+     * @param node the object to encode.
+     * @param formatted whether the JSON string should be formatted.
+     * @return the JSON string representation of the object.
+     */
     public synchronized String encode(JsonNode node, boolean formatted) {
-        // TODO: documentation
         return encoder.encode(Objects.requireNonNull(node), formatted);
     }
 
@@ -48,7 +58,7 @@ public class JsonSerializer {
     /**
      * Encodes the given object to a JSON string with optional formatting.
      *
-     * @param value     the object to encode.
+     * @param value the object to encode.
      * @param formatted whether the JSON string should be formatted.
      * @return the JSON string representation of the object.
      */
@@ -60,11 +70,11 @@ public class JsonSerializer {
      * Decodes a JSON file to an object of the specified type.
      *
      * @param file the JSON file to decode.
-     * @param c    the target type class.
-     * @param <T>  the target type.
+     * @param c the target type class.
+     * @param <T> the target type.
      * @return the decoded object.
      * @throws JsonException if an error occurs during decoding.
-     * @throws IOException   if an I/O error occurs.
+     * @throws IOException if an I/O error occurs.
      */
     public synchronized <T> T decode(File file, Class<T> c) throws JsonException, IOException {
         return decoder.decode(Objects.requireNonNull(file), c);
@@ -76,22 +86,23 @@ public class JsonSerializer {
      * @param file the JSON file to decode.
      * @return the decoded object.
      * @throws JsonException if an error occurs during decoding.
-     * @throws IOException   if an I/O error occurs.
+     * @throws IOException if an I/O error occurs.
      */
     public synchronized JsonNode decode(File file) throws JsonException, IOException {
         return decoder.decode(Objects.requireNonNull(file));
     }
 
     /**
-     * Decodes a JSON stream to an object of the specified type with optional auto-closing.
+     * Decodes a JSON stream to an object of the specified type with optional
+     * auto-closing.
      *
-     * @param stream    the JSON stream to decode.
-     * @param c         the target type class.
+     * @param stream the JSON stream to decode.
+     * @param c the target type class.
      * @param autoClose whether to automatically close the stream.
-     * @param <T>       the target type.
+     * @param <T> the target type.
      * @return the decoded object.
      * @throws JsonException if an error occurs during decoding.
-     * @throws IOException   if an I/O error occurs.
+     * @throws IOException if an I/O error occurs.
      */
     public synchronized <T> T decode(InputStream stream, Class<T> c, boolean autoClose) throws JsonException, IOException {
         return decoder.decode(Objects.requireNonNull(stream), c, autoClose);
@@ -100,11 +111,11 @@ public class JsonSerializer {
     /**
      * Decodes a JSON stream to an object with optional auto-closing.
      *
-     * @param stream    the JSON stream to decode.
+     * @param stream the JSON stream to decode.
      * @param autoClose whether to automatically close the stream.
      * @return the decoded object.
      * @throws JsonException if an error occurs during decoding.
-     * @throws IOException   if an I/O error occurs.
+     * @throws IOException if an I/O error occurs.
      */
     public synchronized JsonNode decode(InputStream stream, boolean autoClose) throws JsonException, IOException {
         return decoder.decode(Objects.requireNonNull(stream), autoClose);
@@ -114,11 +125,11 @@ public class JsonSerializer {
      * Decodes a JSON stream to an object of the specified type.
      *
      * @param stream the JSON stream to decode.
-     * @param c      the target type class.
-     * @param <T>    the target type.
+     * @param c the target type class.
+     * @param <T> the target type.
      * @return the decoded object.
      * @throws JsonException if an error occurs during decoding.
-     * @throws IOException   if an I/O error occurs.
+     * @throws IOException if an I/O error occurs.
      */
     public synchronized <T> T decode(InputStream stream, Class<T> c) throws JsonException, IOException {
         return decoder.decode(Objects.requireNonNull(stream), c, true);
@@ -130,7 +141,7 @@ public class JsonSerializer {
      * @param stream the JSON stream to decode.
      * @return the decoded object.
      * @throws JsonException if an error occurs during decoding.
-     * @throws IOException   if an I/O error occurs.
+     * @throws IOException if an I/O error occurs.
      */
     public synchronized JsonNode decode(InputStream stream) throws JsonException, IOException {
         return decoder.decode(Objects.requireNonNull(stream), true);
@@ -140,7 +151,7 @@ public class JsonSerializer {
      * Decodes a JSON string to an object of the specified type.
      *
      * @param src the JSON string to decode.
-     * @param c   the target type class.
+     * @param c the target type class.
      * @param <T> the target type.
      * @return the decoded object.
      * @throws JsonException if an error occurs during decoding.

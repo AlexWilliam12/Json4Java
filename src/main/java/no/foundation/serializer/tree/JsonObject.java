@@ -1,24 +1,21 @@
 package no.foundation.serializer.tree;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * A class representing a JSON object node.
- * This class extends JsonNode and implements the Map interface with String keys and JsonNode values.
+ * A class representing a JSON object node. This class extends JsonNode and
+ * implements the Map interface with String keys and JsonNode values.
  */
 public final class JsonObject implements Map<String, JsonNode>, JsonNode {
 
     private final Map<String, JsonNode> pairs;
 
     /**
-     * Constructs a new empty JsonObject.
-     * Uses a LinkedHashMap to maintain insertion order of key-value pairs.
+     * Constructs a new empty JsonObject. Uses a LinkedHashMap to maintain
+     * insertion order of key-value pairs.
      */
     public JsonObject() {
         this.pairs = new LinkedHashMap<>();
@@ -29,7 +26,6 @@ public final class JsonObject implements Map<String, JsonNode>, JsonNode {
      *
      * @return the map of key-value pairs in this JsonObject.
      */
-    @Contract(pure = true)
     public Map<String, JsonNode> getPairs() {
         return pairs;
     }
@@ -39,7 +35,6 @@ public final class JsonObject implements Map<String, JsonNode>, JsonNode {
      *
      * @return the number of key-value pairs in this JsonObject.
      */
-    @Contract(pure = true)
     @Override
     public int size() {
         return pairs.size();
@@ -50,7 +45,6 @@ public final class JsonObject implements Map<String, JsonNode>, JsonNode {
      *
      * @return true if this JsonObject is empty, false otherwise.
      */
-    @Contract(pure = true)
     @Override
     public boolean isEmpty() {
         return pairs.isEmpty();
@@ -60,9 +54,9 @@ public final class JsonObject implements Map<String, JsonNode>, JsonNode {
      * Checks if this JsonObject contains the specified key.
      *
      * @param key the key to check for presence in this JsonObject.
-     * @return true if this JsonObject contains the specified key, false otherwise.
+     * @return true if this JsonObject contains the specified key, false
+     * otherwise.
      */
-    @Contract(pure = true)
     @Override
     public boolean containsKey(Object key) {
         return pairs.containsKey(key);
@@ -72,19 +66,21 @@ public final class JsonObject implements Map<String, JsonNode>, JsonNode {
      * Checks if this JsonObject contains the specified value.
      *
      * @param value the value to check for presence in this JsonObject.
-     * @return true if this JsonObject contains the specified value, false otherwise.
+     * @return true if this JsonObject contains the specified value, false
+     * otherwise.
      */
-    @Contract(pure = true)
     @Override
     public boolean containsValue(Object value) {
         return pairs.containsValue(value);
     }
 
     /**
-     * Retrieves the JsonNode associated with the specified key from this JsonObject.
+     * Retrieves the JsonNode associated with the specified key from this
+     * JsonObject.
      *
      * @param key the key whose associated value is to be returned.
-     * @return the JsonNode associated with the specified key, or null if no mapping exists for the key.
+     * @return the JsonNode associated with the specified key, or null if no
+     * mapping exists for the key.
      */
     @Override
     public JsonNode get(Object key) {
@@ -94,9 +90,10 @@ public final class JsonObject implements Map<String, JsonNode>, JsonNode {
     /**
      * Associates the specified value with the specified key in this JsonObject.
      *
-     * @param key   the key with which the specified value is to be associated.
+     * @param key the key with which the specified value is to be associated.
      * @param value the value to be associated with the specified key.
-     * @return the previous value associated with the key, or null if there was no mapping for the key.
+     * @return the previous value associated with the key, or null if there was
+     * no mapping for the key.
      */
     @Override
     public JsonNode put(String key, JsonNode value) {
@@ -104,10 +101,12 @@ public final class JsonObject implements Map<String, JsonNode>, JsonNode {
     }
 
     /**
-     * Removes the mapping for the specified key from this JsonObject if present.
+     * Removes the mapping for the specified key from this JsonObject if
+     * present.
      *
      * @param key the key whose mapping is to be removed from the JsonObject.
-     * @return the JsonNode previously associated with the key, or null if there was no mapping for the key.
+     * @return the JsonNode previously associated with the key, or null if there
+     * was no mapping for the key.
      */
     @Override
     public JsonNode remove(Object key) {
@@ -120,7 +119,7 @@ public final class JsonObject implements Map<String, JsonNode>, JsonNode {
      * @param map the map whose mappings are to be added to this JsonObject.
      */
     @Override
-    public void putAll(@NotNull Map<? extends String, ? extends JsonNode> map) {
+    public void putAll(Map<? extends String, ? extends JsonNode> map) {
         pairs.putAll(map);
     }
 
@@ -137,9 +136,8 @@ public final class JsonObject implements Map<String, JsonNode>, JsonNode {
      *
      * @return a set view of the keys contained in this JsonObject.
      */
-    @Contract(pure = true)
     @Override
-    public @NotNull Set<String> keySet() {
+    public Set<String> keySet() {
         return pairs.keySet();
     }
 
@@ -148,9 +146,8 @@ public final class JsonObject implements Map<String, JsonNode>, JsonNode {
      *
      * @return a collection view of the values contained in this JsonObject.
      */
-    @Contract(pure = true)
     @Override
-    public @NotNull Collection<JsonNode> values() {
+    public Collection<JsonNode> values() {
         return pairs.values();
     }
 
@@ -159,9 +156,8 @@ public final class JsonObject implements Map<String, JsonNode>, JsonNode {
      *
      * @return a set view of the mappings contained in this JsonObject.
      */
-    @Contract(pure = true)
     @Override
-    public @NotNull Set<Entry<String, JsonNode>> entrySet() {
+    public Set<Entry<String, JsonNode>> entrySet() {
         return pairs.entrySet();
     }
 
@@ -171,7 +167,7 @@ public final class JsonObject implements Map<String, JsonNode>, JsonNode {
      * @return the string representation of this JsonObject.
      */
     @Override
-    public @NotNull String toString() {
+    public String toString() {
         if (pairs.isEmpty()) {
             return "{}";
         }
@@ -190,29 +186,54 @@ public final class JsonObject implements Map<String, JsonNode>, JsonNode {
         return sb.toString();
     }
 
-    @Contract(value = " -> new", pure = true)
-    public static @NotNull JsonObjectBuilder builder() {
+    /**
+     * Returns a builder to construct a JsonObject.
+     *
+     * @return a JsonObjectBuilder instance to build a JsonObject.
+     */
+    public static JsonObjectBuilder builder() {
         return new JsonObjectBuilder();
     }
 
+    /**
+     * A builder class for constructing instances of JsonObject.
+     */
     public static final class JsonObjectBuilder {
-        private final Map<String, JsonNode> values;
-	private final JsonConverter converter;
 
-        @Contract(pure = true)
+        private final Map<String, JsonNode> values;
+        private final JsonConverter converter;
+
+        /**
+         * Constructs a new JsonObjectBuilder.
+         */
         private JsonObjectBuilder() {
             this.values = new LinkedHashMap<>();
-	    this.converter = new JsonConverter();
+            this.converter = new JsonConverter();
         }
 
+        /**
+         * Associates the specified value with the specified key in this
+         * JsonObjectBuilder.
+         *
+         * @param key the key with which the specified value is to be
+         * associated.
+         * @param value the value to be associated with the specified key.
+         * @return this JsonObjectBuilder instance, for method chaining.
+         */
         public JsonObjectBuilder put(String key, Object value) {
             values.put(key, converter.convert(value));
             return this;
         }
 
-        public @NotNull JsonObject build() {
+        /**
+         * Builds and returns a JsonObject based on the key-value pairs added to
+         * this builder.
+         *
+         * @return the constructed JsonObject.
+         */
+        public JsonObject build() {
             JsonObject obj = new JsonObject();
-            for (Entry<String, Object> entry : values.entrySet()) {
+            for (Entry<String, JsonNode> entry : values.entrySet()) {
                 obj.put(entry.getKey(), entry.getValue());
             }
             return obj;

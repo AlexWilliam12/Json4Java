@@ -1,14 +1,10 @@
 package no.foundation.tests.models;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.lang.reflect.Field;
 
 public class ObjectPrinter {
 
-    private ObjectPrinter() {}
-
-    public static @NotNull String print(@NotNull Object obj) {
+    public static String print(Object obj) {
         Class<?> c = obj.getClass();
         String name = c.getSimpleName();
 

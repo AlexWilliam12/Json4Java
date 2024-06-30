@@ -1,14 +1,12 @@
 package no.foundation.tests;
 
-import no.foundation.serializer.JsonSerializer;
-import no.foundation.serializer.tree.JsonNode;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import java.io.File;
 import java.nio.file.Path;
-
+import no.foundation.serializer.JsonSerializer;
+import no.foundation.serializer.tree.JsonNode;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class JsonDecoderJsonNodeTest {
 

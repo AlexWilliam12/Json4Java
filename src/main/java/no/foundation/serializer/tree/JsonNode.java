@@ -6,23 +6,24 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A sealed interface representing a node in a JSON structure.
- * Implementing classes must be one of: JsonValue, JsonArray, or JsonObject.
+ * A sealed interface representing a node in a JSON structure. Implementing
+ * classes must be one of: JsonValue, JsonArray, or JsonObject.
  */
 public sealed interface JsonNode permits JsonValue, JsonArray, JsonObject {
 
     /**
      * Returns the original Java object representation of this JSON node.
-     * Depending on the implementing class, this method returns:
-     * - For JsonValue: the wrapped value.
-     * - For JsonArray: a List<Object> containing original types of elements.
-     * - For JsonObject: a Map<String, Object> containing original types of values.
+     * Depending on the implementing class, this method returns: - For
+     * JsonValue: the wrapped value. - For JsonArray: a List<Object> containing
+     * original types of elements. - For JsonObject: a Map<String, Object>
+     * containing original types of values.
      *
      * @return the original Java object representation of this JSON node.
      */
     default Object getOriginalType() {
         return switch (this) {
-            case JsonValue<?> value -> value.value();
+            case JsonValue<?> value ->
+                value.value();
             case JsonArray array -> {
                 List<JsonNode> nodes = array.getValues();
                 List<Object> list = new ArrayList<>(array.size());

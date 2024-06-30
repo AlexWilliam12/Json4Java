@@ -21,7 +21,8 @@ public class JsonSerializerASTTest {
 
         node.put("object", JsonObject.builder()
                 .put("key", "value")
-                .build());
+                .build()
+        );
 
         node.put("array", JsonArray.of(1, 2, 3));
 
